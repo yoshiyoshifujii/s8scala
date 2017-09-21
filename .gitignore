@@ -1,0 +1,6 @@
+/project/
+/target/
+/dynamodb-local/
+.idea/
+.DS_Store
+/modules/**/target

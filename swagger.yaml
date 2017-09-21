@@ -1,0 +1,90 @@
+---
+swagger: "2.0"
+info:
+  version: "0.1"
+  title: "s8scala"
+schemes:
+- "https"
+paths:
+  /users:
+    post:
+      operationId: usersPost
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - name: params
+          in: body
+          schema:
+            $ref: "#/definitions/UserForCreate"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/UserForModified"
+        400:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        408:
+          description: "timed out"
+        500:
+          description: "internal server eorror"
+
+definitions:
+  UserForCreate:
+    type: object
+    required:
+      - name
+      - email
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+  UserForModified:
+    type: object
+    required:
+      - id
+      - version
+      - name
+      - email
+    properties:
+      id:
+        type: string
+        format: uuid
+      version:
+        type: integer
+        format: int64
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+  Error:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorDetail'
+  ErrorDetail:
+    type: object
+    required:
+      - reason
+    properties:
+      reason:
+        type: string
+      item:
+        type: string
+      args:
+        type: array
+        items:
+          type: object
+
