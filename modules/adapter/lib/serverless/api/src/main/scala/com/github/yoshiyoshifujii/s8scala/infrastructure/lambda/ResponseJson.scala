@@ -8,6 +8,15 @@ case class ResponseJson(isBase64Encoded: Boolean,
                         headers: Map[String, String],
                         body: Option[String])
 
+object InternalServerError {
+  def apply(): ResponseJson = ResponseJson(
+    isBase64Encoded = false,
+    statusCode = HttpStatusCode.InternalServerError,
+    headers = Map("Content-Type" -> "application/json"),
+    None
+  )
+}
+
 object ResponseJsonProtocol extends DefaultJsonProtocol {
   implicit val responseJsonFormatter = jsonFormat4(ResponseJson)
 }

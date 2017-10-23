@@ -4,7 +4,6 @@ import com.github.yoshiyoshifujii.s8scala.application.ApplicationError
 import com.github.yoshiyoshifujii.s8scala.domain.user.{User, UserRepository}
 
 trait UserService {
-
   import com.github.yoshiyoshifujii.s8scala.application.ApplicationErrorConverters._
 
   protected val userRepository: UserRepository
