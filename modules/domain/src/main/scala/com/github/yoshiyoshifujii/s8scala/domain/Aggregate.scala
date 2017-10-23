@@ -4,7 +4,6 @@ import scala.reflect.ClassTag
 
 trait Aggregate { self =>
   type AggregateType <: Aggregate
-
   type IdType <: AggregateId
 
   val id: IdType
@@ -16,7 +15,7 @@ trait Aggregate { self =>
 
   override def equals(other: Any): Boolean = other match {
     case tag(that) => (that canEqual this) && id == that.id
-    case _         => false
+    case _ => false
   }
 
   override def hashCode(): Int = 31 * id.##

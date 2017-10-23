@@ -16,4 +16,3 @@ trait AggregateIdGenerator {
   def generate: AggregateId
 
 }
-

@@ -50,7 +50,6 @@ lazy val root = (project in file(".")).
             description = Some(baseName),
             handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization.App::handleRequest",
             role = roleArn,
-            tracing = Some(Tracing.Active),
             tags = Map("CONTEXT" -> baseName),
             events = Events(
               AuthorizeEvent(
@@ -64,7 +63,6 @@ lazy val root = (project in file(".")).
             description = Some(baseName),
             handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post.App::handleRequest",
             role = roleArn,
-            tracing = Some(Tracing.Active),
             tags = Map("CONTEXT" -> baseName),
             events = Events(
               HttpEvent(
@@ -81,13 +79,6 @@ lazy val root = (project in file(".")).
         )
       )
     }
-  )
-
-lazy val infrastructure = (project in file("./modules/adapter/lib/infrastructure")).
-  settings(commonSettings: _*).
-  settings(
-    name := s"$baseName-infrastructure",
-    libraryDependencies ++= infrastructureDeps
   )
 
 lazy val serverlessApi = (project in file("./modules/adapter/lib/serverless/api")).
@@ -110,8 +101,15 @@ lazy val application = (project in file("./modules/application")).
     name := s"$baseName-application"
   )
 
+lazy val infrastructure = (project in file("./modules/infrastructure")).
+  dependsOn(domain).
+  settings(commonSettings: _*).
+  settings(
+    name := s"$baseName-infrastructure"
+  )
+
 lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamodb")).
-  dependsOn(infrastructure, domain).
+  dependsOn(infrastructure).
   settings(commonSettings: _*).
   settings(
     name := s"$baseName-infrastructure-dynamodb",
@@ -119,7 +117,6 @@ lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamo
   )
 
 lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization")).
-  dependsOn(domain).
   settings(commonSettings: _*).
   settings(assemblySettings: _*).
   settings(
@@ -128,11 +125,10 @@ lazy val authorization = (project in file("./modules/adapter/interface/serverles
   )
 
 lazy val serverlessApiUsersPost = (project in file("./modules/adapter/interface/serverless/api/users/post")).
-  dependsOn(infraDynamo).
+  dependsOn(serverlessApi, domain, application, infraDynamo).
   settings(commonSettings: _*).
   settings(assemblySettings: _*).
   settings(
-    name := s"$baseName-serverless-api-users-post",
-    libraryDependencies ++= serverlessApiUsersPostDeps
+    name := s"$baseName-serverless-api-users-post"
   )
 

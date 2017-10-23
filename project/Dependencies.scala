@@ -23,23 +23,19 @@ object Dependencies {
     specs2JUnit % Test
   )
 
-  val infrastructureDeps = Seq(
-    sprayJson
-  )
-
   val serverlessApiDeps = Seq(
     lambdaCore,
     sprayJson
   )
 
   val infraDynamoDeps = Seq(
-    awsSDKDynamoDB
+    awsSDKDynamoDB,
+    sprayJson
   )
 
   val authorizationDeps = Seq(
-    lambdaCore
+    lambdaCore,
+    sprayJson
   )
-
-  val serverlessApiUsersPostDeps = Seq()
 
 }
