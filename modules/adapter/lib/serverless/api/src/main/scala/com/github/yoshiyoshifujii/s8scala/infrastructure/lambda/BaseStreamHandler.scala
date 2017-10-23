@@ -48,8 +48,7 @@ trait BaseStreamHandler extends RequestStreamHandler {
       requestJson <- convert(bytes)
       responseJsonString <- toJson(handle(requestJson))
       responseBytes <- toBytes(responseJsonString)
-    } yield
-      output.write(responseBytes)).fold(
+    } yield output.write(responseBytes)).fold(
       fail,
       identity
     )

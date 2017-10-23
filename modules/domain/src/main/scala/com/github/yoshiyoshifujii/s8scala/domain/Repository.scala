@@ -5,7 +5,8 @@ trait Repository {
   type ENTITY <: Aggregate
 
   protected def insertInternal(entity: ENTITY): Either[RepositoryError, ENTITY]
-  protected def updateInternal(entity: ENTITY, version: Long): Either[RepositoryError, ENTITY]
+  protected def updateInternal(entity: ENTITY,
+                               version: Long): Either[RepositoryError, ENTITY]
 
   def findBy(id: ID): Either[RepositoryError, Option[ENTITY]]
 
@@ -18,4 +19,3 @@ trait Repository {
       insertInternal(entity)
     }
 }
-

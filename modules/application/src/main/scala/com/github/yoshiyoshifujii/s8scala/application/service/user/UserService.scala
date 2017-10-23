@@ -8,12 +8,14 @@ trait UserService {
 
   protected val userRepository: UserRepository
 
-  def create(input: UserCreateInput): Either[ApplicationError, UserCreateOutput] =
+  def create(
+      input: UserCreateInput): Either[ApplicationError, UserCreateOutput] =
     for {
       user <- User.create(input.name, input.email).toApplicationError
       saved <- userRepository.save(user).toApplicationError
-    } yield UserCreateOutput(
-      id = saved.id.value,
-      version = saved.version.getOrElse(1L)
-    )
+    } yield
+      UserCreateOutput(
+        id = saved.id.value,
+        version = saved.version.getOrElse(1L)
+      )
 }

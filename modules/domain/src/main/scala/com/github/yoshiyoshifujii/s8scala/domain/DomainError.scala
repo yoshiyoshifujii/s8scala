@@ -6,8 +6,9 @@ sealed trait DomainError {
   val message: String
 }
 
-case class AssertError(message: String)                      extends DomainError
-case class AlreadyExists(message: String = "already_exists") extends DomainError
+case class AssertError(message: String) extends DomainError
+case class AlreadyExists(message: String = "already_exists")
+    extends DomainError
 
 object DomainErrorConverters {
 
@@ -16,7 +17,8 @@ object DomainErrorConverters {
       t.fold(
         {
           case e: AssertionError =>
-            Left(AssertError(e.getMessage.replaceFirst("assertion failed: ", "")))
+            Left(
+              AssertError(e.getMessage.replaceFirst("assertion failed: ", "")))
         },
         Right(_)
       )

@@ -2,11 +2,12 @@ import Dependencies._
 import serverless._
 
 lazy val accountId = sys.props.getOrElse("AWS_ACCOUNT_ID", "")
+lazy val region = sys.props.getOrElse("AWS_REGION", "")
 lazy val roleArn = sys.props.getOrElse("AWS_ROLE_ARN", "")
 lazy val bucketName = sys.props.getOrElse("AWS_BUCKET_NAME", "")
 lazy val authKey = sys.props.getOrElse("AUTH_KEY", "")
 
-val baseName = ""
+val baseName = "s8scala"
 
 val commonSettings = Seq(
   version := "0.1.0-SNAPSHOT",
@@ -38,7 +39,8 @@ lazy val root = (project in file(".")).
       ServerlessOption(
         Provider(
           awsAccount = accountId,
-          deploymentBucket = bucketName
+          deploymentBucket = bucketName,
+          region = region
         ),
         ApiGateway(
           swagger = file("./swagger.yaml")

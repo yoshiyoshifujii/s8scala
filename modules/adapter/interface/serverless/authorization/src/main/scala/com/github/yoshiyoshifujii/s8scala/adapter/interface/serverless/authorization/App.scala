@@ -1,11 +1,11 @@
-package com.github.yoshiyoshifujii.s8scala
+package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization
 
 import java.io.{BufferedInputStream, InputStream, OutputStream}
 
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import spray.json._
 
-class Auth extends RequestStreamHandler {
+class App extends RequestStreamHandler {
   override def handleRequest(input: InputStream,
                              output: OutputStream,
                              context: Context): Unit = {

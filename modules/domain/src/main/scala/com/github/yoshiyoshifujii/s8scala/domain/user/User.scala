@@ -18,13 +18,13 @@ case class User(id: UserId,
 
 object User {
   import com.github.yoshiyoshifujii.s8scala.domain.DomainErrorConverters._
-  def create(name: String,
-             email: String) = Try {
-    User(
-      id = UserId.generate,
-      version = None,
-      name = UserName(name),
-      email = Email(email)
-    )
-  }.toDomainError
+  def create(name: String, email: String) =
+    Try {
+      User(
+        id = UserId.generate,
+        version = None,
+        name = UserName(name),
+        email = Email(email)
+      )
+    }.toDomainError
 }
