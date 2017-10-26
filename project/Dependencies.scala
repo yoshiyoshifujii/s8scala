@@ -17,6 +17,10 @@ object Dependencies {
   // spray-json
   val sprayJson = "io.spray" %%  "spray-json" % "1.3.3"
 
+  // Scala Logging
+  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
+  val logBackClassic = "ch.qos.logback" % "logback-classic" % "1.1.7"
+
   val rootDeps = Seq(
     specs2Core % Test,
     specs2Mock % Test,
@@ -25,7 +29,15 @@ object Dependencies {
 
   val serverlessApiDeps = Seq(
     lambdaCore,
-    sprayJson
+    sprayJson,
+    scalaLogging,
+    logBackClassic
+  )
+
+  val serverlessLoggerDeps = Seq(
+    sprayJson,
+    scalaLogging,
+    logBackClassic
   )
 
   val infraDynamoDeps = Seq(

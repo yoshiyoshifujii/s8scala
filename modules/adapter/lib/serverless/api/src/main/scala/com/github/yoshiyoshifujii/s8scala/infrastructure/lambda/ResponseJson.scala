@@ -1,7 +1,7 @@
 package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
 
 import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.HttpStatusCode.HttpStatusCode
-import spray.json.DefaultJsonProtocol
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class ResponseJson(isBase64Encoded: Boolean,
                         statusCode: HttpStatusCode,
@@ -18,5 +18,6 @@ object InternalServerError {
 }
 
 object ResponseJsonProtocol extends DefaultJsonProtocol {
-  implicit val responseJsonFormatter = jsonFormat4(ResponseJson)
+  implicit val responseJsonFormatter: RootJsonFormat[ResponseJson] =
+    jsonFormat4(ResponseJson)
 }

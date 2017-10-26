@@ -1,6 +1,6 @@
 package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
 
-import spray.json.DefaultJsonProtocol
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class AuthorizerJson(principalId: String)
 
@@ -40,9 +40,14 @@ case class RequestJson(resource: Option[String],
                        isBase64Encoded: Boolean)
 
 object RequestJsonProtocol extends DefaultJsonProtocol {
-  implicit val authorizerJsonFormat = jsonFormat1(AuthorizerJson)
-  implicit val errorJsonFormat = jsonFormat2(ErrorJson)
-  implicit val identityJsonFormat = jsonFormat11(IdentityJson)
-  implicit val requestContextJsonFormatter = jsonFormat9(RequestContextJson)
-  implicit val requestJsonFormatter = jsonFormat10(RequestJson)
+  implicit val authorizerJsonFormat: RootJsonFormat[AuthorizerJson] =
+    jsonFormat1(AuthorizerJson)
+  implicit val errorJsonFormat: RootJsonFormat[ErrorJson] = jsonFormat2(
+    ErrorJson)
+  implicit val identityJsonFormat: RootJsonFormat[IdentityJson] = jsonFormat11(
+    IdentityJson)
+  implicit val requestContextJsonFormatter
+    : RootJsonFormat[RequestContextJson] = jsonFormat9(RequestContextJson)
+  implicit val requestJsonFormatter: RootJsonFormat[RequestJson] =
+    jsonFormat10(RequestJson)
 }

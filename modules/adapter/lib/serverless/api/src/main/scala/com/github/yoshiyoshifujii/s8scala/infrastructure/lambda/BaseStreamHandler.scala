@@ -4,6 +4,7 @@ import java.io.{InputStream, OutputStream}
 import java.nio.charset.StandardCharsets
 
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
+import com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLogger
 import spray.json._
 
 import scala.util.Try
@@ -11,6 +12,8 @@ import scala.util.Try
 trait BaseStreamHandler extends RequestStreamHandler {
 
   protected def handle(requestJson: RequestJson): ResponseJson
+
+  protected val logger = LambdaLogger()
 
   @throws(classOf[java.io.IOException])
   override def handleRequest(input: InputStream,
@@ -35,12 +38,12 @@ trait BaseStreamHandler extends RequestStreamHandler {
       jsonString.getBytes(StandardCharsets.UTF_8)
     }
 
-    def fail(cause: Throwable): Unit = {
+    def except(cause: Throwable): Unit = {
+      logger.error(cause.getMessage, cause)
       (for {
         errorJson <- toJson(InternalServerError())
         errorBytes <- toBytes(errorJson)
       } yield output.write(errorBytes)).get
-      // log.error(cause)
     }
 
     (for {
@@ -49,7 +52,7 @@ trait BaseStreamHandler extends RequestStreamHandler {
       responseJsonString <- toJson(handle(requestJson))
       responseBytes <- toBytes(responseJsonString)
     } yield output.write(responseBytes)).fold(
-      fail,
+      except,
       identity
     )
   }

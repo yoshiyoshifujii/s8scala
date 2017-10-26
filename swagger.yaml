@@ -8,7 +8,7 @@ schemes:
 paths:
   /users:
     post:
-      operationId: usersPost
+      operationId: postUsers
       consumes:
       - "application/json"
       produces:
@@ -27,6 +27,100 @@ paths:
           description: "bad request"
           schema:
             $ref: "#/definitions/Error"
+        408:
+          description: "timed out"
+        500:
+          description: "internal server eorror"
+    get:
+      operationId: getUsers
+      produces:
+      - "application/json"
+      parameters:
+      - name: next
+        in: query
+        type: string
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/Users"
+        204:
+          description: "no contents"
+          schema:
+            $ref: "#/definitions/Empty"
+        408:
+          description: "timed out"
+        500:
+          description: "internal server eorror"
+  /users/{id}:
+    get:
+      operationId: getUser
+      produces:
+      - "application/json"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "not found"
+        408:
+          description: "timed out"
+        500:
+          description: "internal server eorror"
+    put:
+      operationId: putUser
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+      - name: params
+        in: body
+        schema:
+          $ref: "#/definitions/UserForUpdate"
+      responses:
+        200:
+          description: "success"
+          schema:
+            $ref: "#/definitions/UserForModified"
+        400:
+          description: "bad request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "not found"
+        408:
+          description: "timed out"
+        409:
+          description: "conflict"
+        500:
+          description: "internal server eorror"
+    delete:
+      operationId: deleteUser
+      produces:
+      - "application/json"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+      responses:
+        204:
+          description: "success"
+          schema:
+            $ref: "#/definitions/Empty"
+        404:
+          description: "not found"
         408:
           description: "timed out"
         500:
@@ -63,6 +157,51 @@ definitions:
       email:
         type: string
         format: email
+  User:
+    type: object
+    required:
+      - id
+      - version
+      - name
+      - email
+    properties:
+      id:
+        type: string
+        format: uuid
+      version:
+        type: integer
+        format: int64
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+  Users:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      next:
+        type: string
+  UserForUpdate:
+    type: object
+    required:
+      - version
+      - name
+      - email
+    properties:
+      version:
+        type: integer
+        format: int64
+      name:
+        type: string
+      email:
+        type: string
+        format: email
   Error:
     type: object
     required:
@@ -87,4 +226,5 @@ definitions:
         type: array
         items:
           type: object
-
+  Empty:
+    type: "object"

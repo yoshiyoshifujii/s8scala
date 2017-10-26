@@ -1,0 +1,16 @@
+<configuration>
+    <contextListener class="com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLoggingListener" />
+    <define name="lambdaLogLevel" class="com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLogLevelPropertyDefiner" />
+
+    <appender name="CLOUDWATCH" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.yoshiyoshifujii.s8scala" level="${lambdaLogLevel}" />
+
+    <root level="INFO">
+        <appender-ref ref="CLOUDWATCH" />
+    </root>
+</configuration>
