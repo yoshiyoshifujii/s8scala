@@ -49,7 +49,8 @@ trait BaseStreamHandler extends RequestStreamHandler {
     (for {
       bytes <- toByteArray(input)
       requestJson <- convert(bytes)
-      responseJsonString <- toJson(handle(requestJson))
+      responseJson <- Try(handle(requestJson))
+      responseJsonString <- toJson(responseJson)
       responseBytes <- toBytes(responseJsonString)
     } yield output.write(responseBytes)).fold(
       except,
