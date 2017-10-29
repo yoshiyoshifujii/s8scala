@@ -5,12 +5,9 @@ import ch.qos.logback.classic.spi.LoggerContextListener
 import ch.qos.logback.core.PropertyDefinerBase
 import ch.qos.logback.core.spi.{ContextAwareBase, LifeCycle}
 
-class LambdaLoggingListener
-    extends ContextAwareBase
-    with LoggerContextListener
-    with LifeCycle {
+class LambdaLoggingListener extends ContextAwareBase with LoggerContextListener with LifeCycle {
 
-  private var started = false
+  private var started             = false
   override def isStarted: Boolean = started
 
   override def start(): Unit = {
@@ -25,11 +22,11 @@ class LambdaLoggingListener
     started = false
   }
 
-  override def isResetResistant = true
-  override def onStart(context: LoggerContext): Unit = {}
-  override def onReset(context: LoggerContext): Unit = {}
+  override def isResetResistant                                  = true
+  override def onStart(context: LoggerContext): Unit             = {}
+  override def onReset(context: LoggerContext): Unit             = {}
   override def onLevelChange(logger: Logger, level: Level): Unit = {}
-  override def onStop(context: LoggerContext): Unit = {}
+  override def onStop(context: LoggerContext): Unit              = {}
 }
 
 class LambdaLogLevelPropertyDefiner extends PropertyDefinerBase {

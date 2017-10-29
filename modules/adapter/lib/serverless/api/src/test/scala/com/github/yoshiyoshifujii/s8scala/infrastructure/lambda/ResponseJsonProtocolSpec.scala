@@ -17,7 +17,7 @@ class ResponseJsonProtocolSpec extends Specification {
         body = Some("{}")
       ).toJson must_== JsObject(
         "isBase64Encoded" -> JsFalse,
-        "statusCode" -> JsNumber(200),
+        "statusCode"      -> JsNumber(200),
         "headers" -> JsObject(
           "Content-Type" -> JsString("application/json")
         ),

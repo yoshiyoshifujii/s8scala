@@ -6,13 +6,10 @@ import com.github.yoshiyoshifujii.s8scala.domain.common.Email
 import scala.reflect.{ClassTag, classTag}
 import scala.util.Try
 
-case class User(id: UserId,
-                version: Option[Long],
-                name: UserName,
-                email: Email)
+case class User(id: UserId, version: Option[Long], name: UserName, email: Email)
     extends Aggregate {
   override type AggregateType = User
-  override type IdType = UserId
+  override type IdType        = UserId
   override protected val tag: ClassTag[User] = classTag[User]
 }
 

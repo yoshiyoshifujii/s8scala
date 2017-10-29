@@ -42,12 +42,10 @@ case class RequestJson(resource: Option[String],
 object RequestJsonProtocol extends DefaultJsonProtocol {
   implicit val authorizerJsonFormat: RootJsonFormat[AuthorizerJson] =
     jsonFormat1(AuthorizerJson)
-  implicit val errorJsonFormat: RootJsonFormat[ErrorJson] = jsonFormat2(
-    ErrorJson)
-  implicit val identityJsonFormat: RootJsonFormat[IdentityJson] = jsonFormat11(
-    IdentityJson)
-  implicit val requestContextJsonFormatter
-    : RootJsonFormat[RequestContextJson] = jsonFormat9(RequestContextJson)
+  implicit val errorJsonFormat: RootJsonFormat[ErrorJson]       = jsonFormat2(ErrorJson)
+  implicit val identityJsonFormat: RootJsonFormat[IdentityJson] = jsonFormat11(IdentityJson)
+  implicit val requestContextJsonFormatter: RootJsonFormat[RequestContextJson] = jsonFormat9(
+    RequestContextJson)
   implicit val requestJsonFormatter: RootJsonFormat[RequestJson] =
     jsonFormat10(RequestJson)
 }

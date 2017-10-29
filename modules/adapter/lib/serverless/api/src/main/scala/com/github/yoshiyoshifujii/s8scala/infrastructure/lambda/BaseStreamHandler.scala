@@ -16,9 +16,7 @@ trait BaseStreamHandler extends RequestStreamHandler {
   protected val logger = LambdaLogger()
 
   @throws(classOf[java.io.IOException])
-  override def handleRequest(input: InputStream,
-                             output: OutputStream,
-                             context: Context): Unit = {
+  override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
 
     def toByteArray(input: InputStream) = Try {
       Stream.continually(input.read).takeWhile(_ != -1).map(_.toByte).toArray
@@ -41,17 +39,17 @@ trait BaseStreamHandler extends RequestStreamHandler {
     def except(cause: Throwable): Unit = {
       logger.error(cause.getMessage, cause)
       (for {
-        errorJson <- toJson(InternalServerError())
+        errorJson  <- toJson(InternalServerError())
         errorBytes <- toBytes(errorJson)
       } yield output.write(errorBytes)).get
     }
 
     (for {
-      bytes <- toByteArray(input)
-      requestJson <- convert(bytes)
-      responseJson <- Try(handle(requestJson))
+      bytes              <- toByteArray(input)
+      requestJson        <- convert(bytes)
+      responseJson       <- Try(handle(requestJson))
       responseJsonString <- toJson(responseJson)
-      responseBytes <- toBytes(responseJsonString)
+      responseBytes      <- toBytes(responseJsonString)
     } yield output.write(responseBytes)).fold(
       except,
       identity

@@ -4,8 +4,8 @@ import com.typesafe.scalalogging.LazyLogging
 import spray.json._
 
 trait LambdaLogging extends LazyLogging {
-  private val JsonKeysMessage = "message"
-  private val JsonKeysType = "type"
+  private val JsonKeysMessage    = "message"
+  private val JsonKeysType       = "type"
   private val JsonKeysStackTrace = "stackTrace"
 
   private def parse(message: String) =
@@ -39,15 +39,14 @@ trait LambdaLogging extends LazyLogging {
       } getOrElse JsNull
 
     JsObject(
-      JsonKeysMessage -> parse(message),
-      JsonKeysType -> cause2Type(cause),
+      JsonKeysMessage    -> parse(message),
+      JsonKeysType       -> cause2Type(cause),
       JsonKeysStackTrace -> cause2StackTrace(cause)
     )
   }
 
   private lazy val format2 =
-    (message: String) =>
-      (cause: Throwable) => format2Json(message, cause).compactPrint
+    (message: String) => (cause: Throwable) => format2Json(message, cause).compactPrint
 
   def error(message: String): Unit = logger.error(format(message))
   def error(message: String, cause: Throwable): Unit =

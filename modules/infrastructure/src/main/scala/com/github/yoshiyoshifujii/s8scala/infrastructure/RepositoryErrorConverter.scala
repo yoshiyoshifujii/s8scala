@@ -1,9 +1,6 @@
 package com.github.yoshiyoshifujii.s8scala.infrastructure
 
-import com.github.yoshiyoshifujii.s8scala.domain.{
-  RepositoryError,
-  RepositorySystemError
-}
+import com.github.yoshiyoshifujii.s8scala.domain.{RepositoryError, RepositorySystemError}
 
 import scala.util.Try
 

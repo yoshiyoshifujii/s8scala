@@ -6,9 +6,7 @@ import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
 import spray.json._
 
 class App extends RequestStreamHandler {
-  override def handleRequest(input: InputStream,
-                             output: OutputStream,
-                             context: Context): Unit = {
+  override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
     val bis = new BufferedInputStream(input)
     val bytes =
       Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
@@ -22,8 +20,8 @@ class App extends RequestStreamHandler {
             "policyDocument" -> JsObject(
               "Statement" -> JsArray(
                 JsObject(
-                  "Action" -> JsString("execute-api:Invoke"),
-                  "Effect" -> JsString("Allow"),
+                  "Action"   -> JsString("execute-api:Invoke"),
+                  "Effect"   -> JsString("Allow"),
                   "Resource" -> JsString(methodArn)
                 )
               ))

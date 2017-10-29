@@ -1,11 +1,11 @@
 import Dependencies._
 import serverless._
 
-lazy val accountId = sys.props.getOrElse("AWS_ACCOUNT_ID", "")
-lazy val region = sys.props.getOrElse("AWS_REGION", "")
-lazy val roleArn = sys.props.getOrElse("AWS_ROLE_ARN", "")
+lazy val accountId  = sys.props.getOrElse("AWS_ACCOUNT_ID", "")
+lazy val region     = sys.props.getOrElse("AWS_REGION", "")
+lazy val roleArn    = sys.props.getOrElse("AWS_ROLE_ARN", "")
 lazy val bucketName = sys.props.getOrElse("AWS_BUCKET_NAME", "")
-lazy val authKey = sys.props.getOrElse("AUTH_KEY", "")
+lazy val authKey    = sys.props.getOrElse("AUTH_KEY", "")
 
 val baseName = "s8scala"
 
@@ -29,18 +29,14 @@ val assemblySettings = Seq(
   publishArtifact in (Compile, packageDoc) := false
 )
 
-lazy val root = (project in file(".")).
-  enablePlugins(ServerlessPlugin).
-  aggregate(
+lazy val root = (project in file("."))
+  .enablePlugins(ServerlessPlugin)
+  .aggregate(
     authorization,
-    serverlessApiUsersPost,
-    serverlessApiUsersGets,
-    serverlessApiUsersGet,
-    serverlessApiUsersPut,
-    serverlessApiUsersDelete
-  ).
-  settings(commonSettings: _*).
-  settings(
+    serverlessApiUsers
+  )
+  .settings(commonSettings: _*)
+  .settings(
     name := baseName,
     publishArtifact := false,
     serverlessOption := {
@@ -58,7 +54,8 @@ lazy val root = (project in file(".")).
             filePath = (assemblyOutputPath in assembly in authorization).value,
             name = (name in authorization).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -68,10 +65,11 @@ lazy val root = (project in file(".")).
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessApiUsersPost).value,
-            name = (name in serverlessApiUsersPost).value,
+            filePath = (assemblyOutputPath in assembly in serverlessApiUsers).value,
+            name = (name in serverlessApiUsers).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -87,10 +85,11 @@ lazy val root = (project in file(".")).
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessApiUsersGets).value,
-            name = (name in serverlessApiUsersGets).value,
+            filePath = (assemblyOutputPath in assembly in serverlessApiUsers).value,
+            name = (name in serverlessApiUsers).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.gets.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.gets.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -106,10 +105,11 @@ lazy val root = (project in file(".")).
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessApiUsersGet).value,
-            name = (name in serverlessApiUsersGet).value,
+            filePath = (assemblyOutputPath in assembly in serverlessApiUsers).value,
+            name = (name in serverlessApiUsers).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.get.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.get.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -120,16 +120,17 @@ lazy val root = (project in file(".")).
                 authorizerName = (name in authorization).value,
                 invokeInput = HttpInvokeInput(
                   headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id" -> "XXX")
+                  pathWithQuerys = Seq("id"     -> "XXX")
                 )
               )
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessApiUsersPut).value,
-            name = (name in serverlessApiUsersPut).value,
+            filePath = (assemblyOutputPath in assembly in serverlessApiUsers).value,
+            name = (name in serverlessApiUsers).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.put.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.put.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -140,16 +141,17 @@ lazy val root = (project in file(".")).
                 authorizerName = (name in authorization).value,
                 invokeInput = HttpInvokeInput(
                   headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id" -> "XXX")
+                  pathWithQuerys = Seq("id"     -> "XXX")
                 )
               )
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessApiUsersDelete).value,
-            name = (name in serverlessApiUsersDelete).value,
+            filePath = (assemblyOutputPath in assembly in serverlessApiUsers).value,
+            name = (name in serverlessApiUsers).value,
             description = Some(baseName),
-            handler = "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.delete.App::handleRequest",
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.delete.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             events = Events(
@@ -160,7 +162,7 @@ lazy val root = (project in file(".")).
                 authorizerName = (name in authorization).value,
                 invokeInput = HttpInvokeInput(
                   headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id" -> "XXX")
+                  pathWithQuerys = Seq("id"     -> "XXX")
                 )
               )
             )
@@ -170,94 +172,61 @@ lazy val root = (project in file(".")).
     }
   )
 
-lazy val serverlessLogger = (project in file("./modules/adapter/lib/serverless/logger")).
-  settings(commonSettings: _*).
-  settings(
+lazy val serverlessLogger = (project in file("./modules/adapter/lib/serverless/logger"))
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-serverless-logger",
     libraryDependencies ++= serverlessLoggerDeps
   )
 
-lazy val serverlessApi = (project in file("./modules/adapter/lib/serverless/api")).
-  dependsOn(serverlessLogger).
-  settings(commonSettings: _*).
-  settings(
+lazy val serverlessApi = (project in file("./modules/adapter/lib/serverless/api"))
+  .dependsOn(serverlessLogger)
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-serverless-api",
     libraryDependencies ++= serverlessApiDeps
   )
 
-lazy val domain = (project in file("./modules/domain")).
-  settings(commonSettings: _*).
-  settings(
+lazy val domain = (project in file("./modules/domain"))
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-domain"
   )
 
-lazy val application = (project in file("./modules/application")).
-  dependsOn(domain).
-  settings(commonSettings: _*).
-  settings(
+lazy val application = (project in file("./modules/application"))
+  .dependsOn(domain)
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-application"
   )
 
-lazy val infrastructure = (project in file("./modules/infrastructure")).
-  dependsOn(domain).
-  settings(commonSettings: _*).
-  settings(
+lazy val infrastructure = (project in file("./modules/infrastructure"))
+  .dependsOn(domain)
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-infrastructure"
   )
 
-lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamodb")).
-  dependsOn(infrastructure).
-  settings(commonSettings: _*).
-  settings(
+lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamodb"))
+  .dependsOn(infrastructure)
+  .settings(commonSettings: _*)
+  .settings(
     name := s"$baseName-infrastructure-dynamodb",
     libraryDependencies ++= infraDynamoDeps
   )
 
-lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization")).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
+lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization"))
+  .settings(commonSettings: _*)
+  .settings(assemblySettings: _*)
+  .settings(
     name := s"$baseName-serverless-authorization",
     libraryDependencies ++= authorizationDeps
   )
 
-lazy val serverlessApiUsersPost = (project in file("./modules/adapter/interface/serverless/api/users/post")).
-  dependsOn(serverlessApi, domain, application, infraDynamo).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
-    name := s"$baseName-serverless-api-users-post"
+lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
+  .dependsOn(serverlessApi, domain, application, infraDynamo)
+  .settings(commonSettings: _*)
+  .settings(assemblySettings: _*)
+  .settings(
+    name := s"$baseName-serverless-api-users"
   )
-
-lazy val serverlessApiUsersGets = (project in file("./modules/adapter/interface/serverless/api/users/gets")).
-  dependsOn(serverlessApi, domain, application, infraDynamo).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
-    name := s"$baseName-serverless-api-users-gets"
-  )
-
-lazy val serverlessApiUsersGet = (project in file("./modules/adapter/interface/serverless/api/users/get")).
-  dependsOn(serverlessApi, domain, application, infraDynamo).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
-    name := s"$baseName-serverless-api-users-get"
-  )
-
-lazy val serverlessApiUsersPut = (project in file("./modules/adapter/interface/serverless/api/users/put")).
-  dependsOn(serverlessApi, domain, application, infraDynamo).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
-    name := s"$baseName-serverless-api-users-put"
-  )
-
-lazy val serverlessApiUsersDelete = (project in file("./modules/adapter/interface/serverless/api/users/delete")).
-  dependsOn(serverlessApi, domain, application, infraDynamo).
-  settings(commonSettings: _*).
-  settings(assemblySettings: _*).
-  settings(
-    name := s"$baseName-serverless-api-users-delete"
-  )
-
