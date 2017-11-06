@@ -1,5 +1,6 @@
 package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post
 
+import com.github.yoshiyoshifujii.s8scala.application.service.user.UserService
 import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.{
   BaseStreamHandler,
   HttpStatusCode,
@@ -7,7 +8,7 @@ import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.{
   ResponseJson
 }
 
-trait Base extends BaseStreamHandler {
+trait Base extends BaseStreamHandler with UserService {
   override protected def handle(requestJson: RequestJson): ResponseJson = {
     println(requestJson)
     ResponseJson(
