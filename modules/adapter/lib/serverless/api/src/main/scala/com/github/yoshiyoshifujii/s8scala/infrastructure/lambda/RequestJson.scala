@@ -28,6 +28,10 @@ case class RequestContextJson(apiId: String,
                               resourcePath: String,
                               stage: String)
 
+trait BodyConverter[J] {
+  def convert(t: String): J
+}
+
 case class RequestJson(resource: Option[String],
                        path: String,
                        httpMethod: String,
@@ -37,7 +41,10 @@ case class RequestJson(resource: Option[String],
                        stageVariables: Option[Map[String, String]],
                        requestContext: RequestContextJson,
                        body: Option[String],
-                       isBase64Encoded: Boolean)
+                       isBase64Encoded: Boolean) {
+  def bodyConvert[A](implicit bodyConverter: BodyConverter[A]): Option[A] =
+    body map bodyConverter.convert
+}
 
 object RequestJsonProtocol extends DefaultJsonProtocol {
   implicit val authorizerJsonFormat: RootJsonFormat[AuthorizerJson] =

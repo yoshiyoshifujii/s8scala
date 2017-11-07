@@ -60,6 +60,7 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
             events = Events(
               AuthorizeEvent(
                 name = (name in authorization).value
@@ -74,6 +75,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region),
             events = Events(
               HttpEvent(
                 path = "/users",
@@ -81,7 +84,8 @@ lazy val root = (project in file("."))
                 cors = true,
                 authorizerName = (name in authorization).value,
                 invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey)
+                  headers = Seq("Authorization" -> authKey),
+                  body = Some("""{"name":"hoge","email":"hoge@hoge.com"}""".getBytes("utf-8"))
                 )
               )
             )
@@ -94,6 +98,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.gets.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region),
             events = Events(
               HttpEvent(
                 path = "/users",
@@ -114,6 +120,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.get.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region),
             events = Events(
               HttpEvent(
                 path = "/users/{id}",
@@ -135,6 +143,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.put.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region),
             events = Events(
               HttpEvent(
                 path = "/users/{id}",
@@ -156,6 +166,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.delete.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region),
             events = Events(
               HttpEvent(
                 path = "/users/{id}",

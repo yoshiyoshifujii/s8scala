@@ -39,7 +39,7 @@ trait BaseStreamHandler extends RequestStreamHandler {
     def except(cause: Throwable): Unit = {
       logger.error(cause.getMessage, cause)
       (for {
-        errorJson  <- toJson(InternalServerError())
+        errorJson  <- toJson(InternalServerErrorJson())
         errorBytes <- toBytes(errorJson)
       } yield output.write(errorBytes)).get
     }

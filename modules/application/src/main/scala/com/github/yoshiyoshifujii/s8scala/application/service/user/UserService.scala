@@ -8,6 +8,8 @@ trait UserService {
 
   protected val userRepository: UserRepository
 
+  case class UserCreateInput(name: String, email: String)
+  case class UserCreateOutput(id: String, version: Long)
   def create(input: UserCreateInput): Either[ApplicationError, UserCreateOutput] =
     for {
       user  <- User.create(input.name, input.email).toApplicationError
