@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: User event reciever.
+Parameters:
+  EnvName:
+    Type: String
+    Description: Name of an environment. 'staging', 'production' and any name.
+    AllowedPattern: ^.*[^0-9]$
+    ConstraintDescription: Must end with non numberic character.
+Resources:
+  UserUsersQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Sub user-users-${EnvName}
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "DeadLetterUserUsersQueue"
+            - "Arn"
+        maxReceiveCount: 2
+  DeadLetterUserUsersQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: !Sub user-users-dead-${EnvName}

@@ -11,6 +11,14 @@ case class User(id: UserId, version: Option[Long], name: UserName, email: Email)
   override type AggregateType = User
   override type IdType        = UserId
   override protected val tag: ClassTag[User] = classTag[User]
+
+  def toCreatedEvent: UserCreatedEvent =
+    UserCreatedEvent(
+      id = id.value,
+      version = version.getOrElse(1L),
+      name = name.value,
+      email = email.value
+    )
 }
 
 object User {

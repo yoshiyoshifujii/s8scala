@@ -197,6 +197,11 @@ lazy val root = (project in file("."))
         stackName = s"$baseName-dynamodb-$EnvName",
         template = "dynamodb.yaml",
         parameters = Map("EnvName" -> EnvName)
+      ),
+      Alias("sqs") -> CloudformationStack(
+        stackName = s"$baseName-sqs-$EnvName",
+        template = "sqs.yaml",
+        parameters = Map("EnvName" -> EnvName)
       )
     )
   )
@@ -244,6 +249,14 @@ lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamo
     libraryDependencies ++= infraDynamoDeps
   )
 
+lazy val infraSQS = (project in file("./modules/adapter/infrastructure/sqs"))
+  .dependsOn(infrastructure)
+  .settings(commonSettings: _*)
+  .settings(
+    name := s"$baseName-infrastructure-sqs",
+    libraryDependencies ++= infraSQSDeps
+  )
+
 lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization"))
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
@@ -253,7 +266,7 @@ lazy val authorization = (project in file("./modules/adapter/interface/serverles
   )
 
 lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
-  .dependsOn(serverlessApi, domain, application, infraDynamo)
+  .dependsOn(serverlessApi, domain, application, infraDynamo, infraSQS)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
