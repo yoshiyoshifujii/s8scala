@@ -3,6 +3,8 @@ package com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb.user
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec
 import com.amazonaws.services.dynamodbv2.document.{DynamoDB, Item}
+import com.amazonaws.xray.AWSXRay
+import com.amazonaws.xray.handlers.TracingHandler
 import com.github.yoshiyoshifujii.s8scala.domain.RepositoryError
 import com.github.yoshiyoshifujii.s8scala.domain.common.Email
 import com.github.yoshiyoshifujii.s8scala.domain.user.{User, UserId, UserName}
@@ -19,6 +21,7 @@ trait UserRepositoryOnDynamoDB {
   private lazy val dynamoDBClient = AmazonDynamoDBClientBuilder
     .standard()
     .withRegion(regionName)
+    .withRequestHandlers(new TracingHandler(AWSXRay.getGlobalRecorder))
     .build()
 
   private lazy val dynamoDB = new DynamoDB(dynamoDBClient)

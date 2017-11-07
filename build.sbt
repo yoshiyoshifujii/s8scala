@@ -20,6 +20,7 @@ val commonSettings = Seq(
 
 val assemblySettings = Seq(
   assemblyMergeStrategy in assembly := {
+    case PathList(ps @ _*) if ps.last endsWith ".properties" => MergeStrategy.first
     case "application.conf" => MergeStrategy.concat
     case x =>
       val oldStrategy = (assemblyMergeStrategy in assembly).value

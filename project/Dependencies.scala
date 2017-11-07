@@ -11,6 +11,12 @@ object Dependencies {
   val awsSDKVersion  = "1.11.199"
   val awsSDKDynamoDB = "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSDKVersion
 
+  // XRay
+  val awsXRayVersion = "1.2.0"
+  val awsXRayCore         = "com.amazonaws" % "aws-xray-recorder-sdk-core" % awsXRayVersion
+  val awsXRaySDK          = "com.amazonaws" % "aws-xray-recorder-sdk-aws-sdk" % awsXRayVersion
+  val awsXRayInstrumentor = "com.amazonaws" % "aws-xray-recorder-sdk-aws-sdk-instrumentor" % awsXRayVersion
+
   // Amazon Lambda
   val lambdaCore = "com.amazonaws" % "aws-lambda-java-core" % "1.1.0"
 
@@ -42,6 +48,9 @@ object Dependencies {
 
   val infraDynamoDeps = Seq(
     awsSDKDynamoDB,
+    awsXRayCore,
+    awsXRaySDK,
+    awsXRayInstrumentor,
     sprayJson
   )
 
