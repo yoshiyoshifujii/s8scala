@@ -234,7 +234,7 @@ lazy val application = (project in file("./modules/application"))
     name := s"$baseName-application"
   )
 
-lazy val infrastructure = (project in file("./modules/infrastructure"))
+lazy val infrastructure = (project in file("./modules/adapter/infrastructure/core"))
   .dependsOn(domain)
   .settings(commonSettings: _*)
   .settings(
@@ -265,8 +265,16 @@ lazy val authorization = (project in file("./modules/adapter/interface/serverles
     libraryDependencies ++= authorizationDeps
   )
 
+lazy val serverlessApiCore = (project in file("./modules/adapter/interface/serverless/api/core"))
+  .dependsOn(serverlessApi, domain, application, infrastructure)
+  .settings(commonSettings: _*)
+  .settings(assemblySettings: _*)
+  .settings(
+    name := s"$baseName-serverless-api-core"
+  )
+
 lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
-  .dependsOn(serverlessApi, domain, application, infraDynamo, infraSQS)
+  .dependsOn(serverlessApiCore, infraDynamo, infraSQS)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(

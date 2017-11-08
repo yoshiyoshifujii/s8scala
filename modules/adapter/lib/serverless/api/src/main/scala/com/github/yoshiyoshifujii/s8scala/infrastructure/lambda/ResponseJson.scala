@@ -8,12 +8,12 @@ case class ResponseJson(isBase64Encoded: Boolean,
                         headers: Map[String, String],
                         body: Option[String])
 
-object InternalServerErrorJson {
+object NoContentJson {
   def apply(): ResponseJson = ResponseJson(
     isBase64Encoded = false,
-    statusCode = HttpStatusCode.InternalServerError,
+    statusCode = HttpStatusCode.NoContent,
     headers = Map("Content-Type" -> "application/json"),
-    None
+    body = None
   )
 }
 
@@ -23,6 +23,33 @@ object BadRequestJson {
     statusCode = HttpStatusCode.BadRequest,
     headers = Map("Content-Type" -> "application/json"),
     body = Some(s"""{"message":"$message"}""")
+  )
+}
+
+object NotFoundJson {
+  def apply(): ResponseJson = ResponseJson(
+    isBase64Encoded = false,
+    statusCode = HttpStatusCode.NotFound,
+    headers = Map("Content-Type" -> "application/json"),
+    body = None
+  )
+}
+
+object ConflictJson {
+  def apply(): ResponseJson = ResponseJson(
+    isBase64Encoded = false,
+    statusCode = HttpStatusCode.Conflict,
+    headers = Map("Content-Type" -> "application/json"),
+    body = None
+  )
+}
+
+object InternalServerErrorJson {
+  def apply(): ResponseJson = ResponseJson(
+    isBase64Encoded = false,
+    statusCode = HttpStatusCode.InternalServerError,
+    headers = Map("Content-Type" -> "application/json"),
+    None
   )
 }
 

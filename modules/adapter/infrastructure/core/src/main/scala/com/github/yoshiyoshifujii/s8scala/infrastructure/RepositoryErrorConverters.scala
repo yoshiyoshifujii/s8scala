@@ -4,7 +4,7 @@ import com.github.yoshiyoshifujii.s8scala.domain.{RepositoryError, RepositorySys
 
 import scala.util.Try
 
-object RepositoryErrorConverter {
+object RepositoryErrorConverters {
 
   implicit class Try2RepositoryError[E](val t: Try[E]) extends AnyVal {
     def toRepositoryError: Either[RepositoryError, E] =
