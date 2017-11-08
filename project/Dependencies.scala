@@ -34,17 +34,21 @@ object Dependencies {
     specs2JUnit % Test
   )
 
-  val serverlessApiDeps = Seq(
-    lambdaCore,
+  val serverlessLoggerDeps = Seq(
     sprayJson,
     scalaLogging,
     logBackClassic
   )
 
-  val serverlessLoggerDeps = Seq(
-    sprayJson,
-    scalaLogging,
-    logBackClassic
+  val serverlessApiDeps = Seq(
+    lambdaCore
+  )
+
+  val serverlessConsumeSQSDeps = Seq(
+    awsSDKSQS,
+    awsXRayCore,
+    awsXRaySDK,
+    awsXRayInstrumentor
   )
 
   val infraDynamoDeps = Seq(

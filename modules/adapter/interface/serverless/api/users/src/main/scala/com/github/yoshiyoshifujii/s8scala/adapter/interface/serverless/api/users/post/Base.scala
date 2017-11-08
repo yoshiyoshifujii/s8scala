@@ -19,8 +19,9 @@ trait Base extends BaseStreamHandler with UserService {
         output.toJson.compactPrint
     }
   }
-  import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.ResponseJsonConverters._
+
   import com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.core.ServerlessApiErrorConverters._
+  import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.ResponseJsonConverters._
   import UserCreateIOJsonProtocol._
 
   override protected def handle(requestJson: RequestJson): ResponseJson =
