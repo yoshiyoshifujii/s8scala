@@ -221,12 +221,12 @@ lazy val serverlessApi = (project in file("./modules/adapter/lib/serverless/api"
     libraryDependencies ++= serverlessApiDeps
   )
 
-lazy val serverlessConsumeSQS = (project in file("./modules/adapter/lib/serverless/consume/sqs"))
+lazy val serverlessSubscriberSQS = (project in file("./modules/adapter/lib/serverless/subscriber/sqs"))
   .dependsOn(serverlessLogger)
   .settings(commonSettings: _*)
   .settings(
-    name := s"$baseName-serverless-consume-sqs",
-    libraryDependencies ++= serverlessConsumeSQSDeps
+    name := s"$baseName-serverless-subscriber-sqs",
+    libraryDependencies ++= serverlessSubscriberSQSDeps
   )
 
 lazy val domain = (project in file("./modules/domain"))
@@ -288,17 +288,17 @@ lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serv
     name := s"$baseName-serverless-api-users"
   )
 
-lazy val serverlessConsumeSQSCore = (project in file("./modules/adapter/interface/serverless/consume/sqs/core"))
-  .dependsOn(serverlessConsumeSQS, domain, application, infrastructure)
+lazy val serverlessSubscriberSQSCore = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/core"))
+  .dependsOn(serverlessSubscriberSQS, domain, application, infrastructure)
   .settings(commonSettings: _*)
   .settings(
-    name := s"$baseName-serverless-consume-sqs-core"
+    name := s"$baseName-serverless-subscriber-sqs-core"
   )
 
-lazy val serverlessConsumeUsers = (project in file("./modules/adapter/interface/serverless/consume/sqs/users"))
-  .dependsOn(serverlessConsumeSQSCore, infraDynamo, infraSQS)
+lazy val serverlessSubscriberUsers = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/users"))
+  .dependsOn(serverlessSubscriberSQSCore, infraDynamo, infraSQS)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
-    name := s"$baseName-serverless-consume-sqs-users"
+    name := s"$baseName-serverless-subscriber-sqs-users"
   )

@@ -44,7 +44,7 @@ object Dependencies {
     lambdaCore
   )
 
-  val serverlessConsumeSQSDeps = Seq(
+  val serverlessSubscriberSQSDeps = Seq(
     awsSDKSQS,
     awsXRayCore,
     awsXRaySDK,
