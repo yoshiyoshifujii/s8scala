@@ -4,7 +4,7 @@ import com.amazonaws.services.sqs.model.Message
 import com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLogger
 import spray.json._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 trait BaseSQSHandler extends SQSWrapper {
 
@@ -30,10 +30,16 @@ trait BaseSQSHandler extends SQSWrapper {
     def convertFail(skip: SkipSQSFailure): Unit =
       logger.error(skip.message)
 
-    def success(m: Message, input: DataType): Unit = {
-      logger.debug(s"success. $input")
+    def doSkip(m: Message, skipSQSFailure: SkipSQSFailure): Unit = {
+      logger.error(skipSQSFailure.message)
       deleteMessage(m.getReceiptHandle).get
     }
+
+    def doRetry(retrySQSFailure: RetrySQSFailure): Unit =
+      throw new java.io.IOException(retrySQSFailure.cause)
+
+    def success(m: Message): Unit =
+      deleteMessage(m.getReceiptHandle).get
 
     (for {
       s <- approximateReceiveMessages
@@ -41,21 +47,19 @@ trait BaseSQSHandler extends SQSWrapper {
         s.foreach { m =>
           convert(m).fold(
             convertFail,
-            r => handle(r).fold(
+            handle(_).fold(
               {
-                case skip: SkipSQSFailure =>
-                  logger.error(skip.message)
-                case retry: RetrySQSFailure =>
-                  throw new java.io.IOException(retry.cause)
+                case s: SkipSQSFailure => doSkip(m, s)
+                case r: RetrySQSFailure => doRetry(r)
               },
-              _ => success(m, r)
+              _ => success(m)
             ))
         }
       }
-    } yield ()) match {
-      case Failure(e) => fail(e)
-      case Success(_) => ()
-    }
+    } yield ()).fold(
+      fail,
+      identity
+    )
   }
 
 }

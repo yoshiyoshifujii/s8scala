@@ -20,10 +20,6 @@ trait UserPublisherOnSQS {
     .withRequestHandlers(new TracingHandler(AWSXRay.getGlobalRecorder))
     .build()
 
-  object UserCreatedEventJsonProtocol extends DefaultJsonProtocol {
-    implicit val userCreatedEventJsonFormatter = jsonFormat4(UserCreatedEvent.apply)
-  }
-
   def publish(userCreatedEvent: UserCreatedEvent): Try[String] =
     Try {
       import UserCreatedEventJsonProtocol._

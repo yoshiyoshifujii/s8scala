@@ -14,7 +14,8 @@ trait SQSWrapper {
   protected val queueName: String
   protected val LimitSize: Int = 200
 
-  lazy protected val sqsClient = AmazonSQSClientBuilder.standard()
+  lazy protected val sqsClient = AmazonSQSClientBuilder
+    .standard()
     .withRegion(regionName)
     .withRequestHandlers(new TracingHandler(AWSXRay.getGlobalRecorder))
     .build()
@@ -42,7 +43,7 @@ trait SQSWrapper {
   def receiveMessage: Try[Seq[Message]] =
     for {
       url <- queueUrl
-      message <- Try{
+      message <- Try {
         sqsClient.receiveMessage(
           new ReceiveMessageRequest()
             .withQueueUrl(url.getQueueUrl)
@@ -65,7 +66,7 @@ trait SQSWrapper {
     }
 
     for {
-      count <- approximateNumberOfMessages
+      count    <- approximateNumberOfMessages
       messages <- recursiveMessages(if (LimitSize < count) LimitSize else count)
     } yield messages
   }
@@ -97,8 +98,7 @@ trait SQSWrapper {
   def deleteMessage(receiptHandle: String): Try[Unit] =
     for {
       url <- queueUrl
-      _ <- deleteMessage(url.getQueueUrl, receiptHandle)
+      _   <- deleteMessage(url.getQueueUrl, receiptHandle)
     } yield ()
 
 }
-

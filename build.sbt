@@ -36,7 +36,8 @@ lazy val root = (project in file("."))
   .enablePlugins(ServerlessPlugin, CloudformationPlugin)
   .aggregate(
     authorization,
-    serverlessApiUsers
+    serverlessApiUsers,
+    serverlessSubscriberUsers
   )
   .settings(commonSettings: _*)
   .settings(
@@ -181,6 +182,17 @@ lazy val root = (project in file("."))
                 )
               )
             )
+          ),
+          Function(
+            filePath = (assemblyOutputPath in assembly in serverlessSubscriberUsers).value,
+            name = (name in serverlessSubscriberUsers).value,
+            description = Some(baseName),
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.sqs.users.App::handler",
+            role = roleArn,
+            tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region)
           )
         )
       )
