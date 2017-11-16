@@ -24,7 +24,7 @@ trait BaseSQSHandler extends SQSWrapper {
 
     def fail(e: Throwable): Unit = e match {
       case io: java.io.IOException => throw io
-      case other: Throwable => logger.error(other.getMessage, other)
+      case other: Throwable        => logger.error(other.getMessage, other)
     }
 
     def convertFail(skip: SkipSQSFailure): Unit =
@@ -45,15 +45,14 @@ trait BaseSQSHandler extends SQSWrapper {
       s <- approximateReceiveMessages
       _ <- Try {
         s.foreach { m =>
-          convert(m).fold(
-            convertFail,
-            handle(_).fold(
-              {
-                case s: SkipSQSFailure => doSkip(m, s)
-                case r: RetrySQSFailure => doRetry(r)
-              },
-              _ => success(m)
-            ))
+          convert(m).fold(convertFail,
+                          handle(_).fold(
+                            {
+                              case s: SkipSQSFailure  => doSkip(m, s)
+                              case r: RetrySQSFailure => doRetry(r)
+                            },
+                            _ => success(m)
+                          ))
         }
       }
     } yield ()).fold(
@@ -63,4 +62,3 @@ trait BaseSQSHandler extends SQSWrapper {
   }
 
 }
-

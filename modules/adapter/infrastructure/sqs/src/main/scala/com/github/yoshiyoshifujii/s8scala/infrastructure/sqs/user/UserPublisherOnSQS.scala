@@ -1,4 +1,4 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb.user
+package com.github.yoshiyoshifujii.s8scala.infrastructure.sqs.user
 
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageRequest

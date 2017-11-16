@@ -11,6 +11,7 @@ object Dependencies {
   val awsSDKVersion  = "1.11.225"
   val awsSDKDynamoDB = "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSDKVersion
   val awsSDKSQS      = "com.amazonaws" % "aws-java-sdk-sqs" % awsSDKVersion
+  val awsSDKKinesis  = "com.amazonaws" % "aws-java-sdk-kinesis" % awsSDKVersion
 
   // XRay
   val awsXRayVersion = "1.2.0"
@@ -61,6 +62,14 @@ object Dependencies {
 
   val infraSQSDeps = Seq(
     awsSDKSQS,
+    awsXRayCore,
+    awsXRaySDK,
+    awsXRayInstrumentor,
+    sprayJson
+  )
+
+  val infraKinesisDeps = Seq(
+    awsSDKKinesis,
     awsXRayCore,
     awsXRaySDK,
     awsXRayInstrumentor,

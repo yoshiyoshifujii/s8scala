@@ -1,7 +1,7 @@
 package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.sqs.users
 
 import com.github.yoshiyoshifujii.s8scala.domain.user.UserCreatedEvent
-import com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb.user.UserCreatedEventJsonProtocol
+import com.github.yoshiyoshifujii.s8scala.infrastructure.sqs.user.UserCreatedEventJsonProtocol
 import com.github.yoshiyoshifujii.s8scala.infrastructure.sqs.{BaseSQSHandler, SQSFailure}
 import spray.json.JsonReader
 

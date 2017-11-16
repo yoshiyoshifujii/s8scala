@@ -37,7 +37,8 @@ lazy val root = (project in file("."))
   .aggregate(
     authorization,
     serverlessApiUsers,
-    serverlessSubscriberUsers
+    serverlessSubscriberSQSUsers,
+    serverlessSubscriberKinesisUsers
   )
   .settings(commonSettings: _*)
   .settings(
@@ -184,11 +185,22 @@ lazy val root = (project in file("."))
             )
           ),
           Function(
-            filePath = (assemblyOutputPath in assembly in serverlessSubscriberUsers).value,
-            name = (name in serverlessSubscriberUsers).value,
+            filePath = (assemblyOutputPath in assembly in serverlessSubscriberSQSUsers).value,
+            name = (name in serverlessSubscriberSQSUsers).value,
             description = Some(baseName),
             handler =
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.sqs.users.App::handler",
+            role = roleArn,
+            tags = Map("CONTEXT" -> baseName),
+            tracing = Some(Tracing.Active),
+            environment = Map("region" -> region)
+          ),
+          Function(
+            filePath = (assemblyOutputPath in assembly in serverlessSubscriberKinesisUsers).value,
+            name = (name in serverlessSubscriberKinesisUsers).value,
+            description = Some(baseName),
+            handler =
+              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.kinesis.users.App::handler",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
             tracing = Some(Tracing.Active),
@@ -241,6 +253,13 @@ lazy val serverlessSubscriberSQS = (project in file("./modules/adapter/lib/serve
     libraryDependencies ++= serverlessSubscriberSQSDeps
   )
 
+lazy val serverlessSubscriberKinesis = (project in file("./modules/adapter/lib/serverless/subscriber/kinesis"))
+  .dependsOn(serverlessLogger)
+  .settings(commonSettings: _*)
+  .settings(
+    name := s"$baseName-serverless-subscriber-kinesis"
+  )
+
 lazy val domain = (project in file("./modules/domain"))
   .settings(commonSettings: _*)
   .settings(
@@ -277,6 +296,14 @@ lazy val infraSQS = (project in file("./modules/adapter/infrastructure/sqs"))
     libraryDependencies ++= infraSQSDeps
   )
 
+lazy val infraKinesis = (project in file("./modules/adapter/infrastructure/kinesis"))
+  .dependsOn(infrastructure)
+  .settings(commonSettings: _*)
+  .settings(
+    name := s"$baseName-infrastructure-kinesis",
+    libraryDependencies ++= infraKinesisDeps
+  )
+
 lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization"))
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
@@ -293,7 +320,7 @@ lazy val serverlessApiCore = (project in file("./modules/adapter/interface/serve
   )
 
 lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
-  .dependsOn(serverlessApiCore, infraDynamo, infraSQS)
+  .dependsOn(serverlessApiCore, infraDynamo, infraSQS, infraKinesis)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
@@ -307,10 +334,25 @@ lazy val serverlessSubscriberSQSCore = (project in file("./modules/adapter/inter
     name := s"$baseName-serverless-subscriber-sqs-core"
   )
 
-lazy val serverlessSubscriberUsers = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/users"))
+lazy val serverlessSubscriberSQSUsers = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/users"))
   .dependsOn(serverlessSubscriberSQSCore, infraDynamo, infraSQS)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
     name := s"$baseName-serverless-subscriber-sqs-users"
+  )
+
+lazy val serverlessSubscriberKinesisCore = (project in file("./modules/adapter/interface/serverless/subscriber/kinesis/core"))
+  .dependsOn(serverlessSubscriberSQS, domain, application, infrastructure)
+  .settings(commonSettings: _*)
+  .settings(
+    name := s"$baseName-serverless-subscriber-sqs-core"
+  )
+
+lazy val serverlessSubscriberKinesisUsers = (project in file("./modules/adapter/interface/serverless/subscriber/kinesis/users"))
+  .dependsOn(serverlessSubscriberKinesisCore)
+  .settings(commonSettings: _*)
+  .settings(assemblySettings: _*)
+  .settings(
+    name := s"$baseName-serverless-subscriber-kinesis-users"
   )
