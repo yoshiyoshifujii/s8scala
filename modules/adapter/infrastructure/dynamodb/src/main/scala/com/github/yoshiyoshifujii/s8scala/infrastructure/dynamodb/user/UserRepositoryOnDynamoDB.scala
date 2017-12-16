@@ -2,6 +2,7 @@ package com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb.user
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec
+import com.amazonaws.services.dynamodbv2.document.utils.{NameMap, ValueMap}
 import com.amazonaws.services.dynamodbv2.document.{DynamoDB, Item}
 import com.amazonaws.xray.AWSXRay
 import com.amazonaws.xray.handlers.TracingHandler
@@ -49,7 +50,10 @@ trait UserRepositoryOnDynamoDB {
   protected def updateInternal(entity: User, version: Long): Either[RepositoryError, User] =
     Try {
       val newVersion = version + 1L
-      table.putItem(generateItem(entity, newVersion))
+      val conditionExpression = "#v = :version"
+      val nameMap = new NameMap().`with`("#v", AttrVersion)
+      val valueMap = new ValueMap().withLong(":version", version)
+      table.putItem(generateItem(entity, newVersion), conditionExpression, nameMap, valueMap)
       entity.copy(version = Some(newVersion))
     }.toRepositoryError
 
