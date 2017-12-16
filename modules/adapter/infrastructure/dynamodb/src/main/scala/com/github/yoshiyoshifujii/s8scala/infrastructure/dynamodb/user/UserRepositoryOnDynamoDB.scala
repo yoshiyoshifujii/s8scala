@@ -14,7 +14,7 @@ import scala.collection.JavaConverters._
 import scala.util.Try
 
 trait UserRepositoryOnDynamoDB {
-  import com.github.yoshiyoshifujii.s8scala.infrastructure.RepositoryErrorConverters._
+  import com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb.RepositoryErrorConverters._
 
   protected val regionName: String
   protected val tableName: String
