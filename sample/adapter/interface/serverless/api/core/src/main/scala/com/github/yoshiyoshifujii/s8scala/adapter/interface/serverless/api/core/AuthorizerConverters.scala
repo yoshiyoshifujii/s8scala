@@ -6,7 +6,7 @@ import spray.json.{DefaultJsonProtocol, JsonParser}
 
 object AuthorizerConverters extends DefaultJsonProtocol {
 
-  implicit val AuthorizerFormatter = jsonFormat1(Authorizer)
+  implicit val AuthorizerFormatter = jsonFormat(Authorizer, "account_id")
 
   implicit object AuthorizeConverterImpl extends AuthorizeConverter[Authorizer] {
     override def convert(t: String): Authorizer = JsonParser(t).convertTo[Authorizer]

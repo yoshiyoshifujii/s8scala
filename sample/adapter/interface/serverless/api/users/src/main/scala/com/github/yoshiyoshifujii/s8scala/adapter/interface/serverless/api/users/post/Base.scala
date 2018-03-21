@@ -29,6 +29,7 @@ trait Base extends BaseStreamHandler with UserService {
 
   override protected def handle(requestJson: RequestJson): Either[Invalid, Valid] =
     for {
+      env        <- requestJson.stageVariable("env").ifNoneThenInternalServerError
       authorizer <- requestJson.authorizeConvert[Authorizer].ifNoneThenUnauthorized
       input      <- requestJson.bodyConvert[UserCreateInput].ifNoneThenBadRequest("invalid_data")
       output     <- create(authorizer, input).toServerlessError

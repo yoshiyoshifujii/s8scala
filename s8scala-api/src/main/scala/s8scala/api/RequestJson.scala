@@ -66,6 +66,7 @@ case class RequestJson(resource: Option[String],
 
   def queryStringParameter(key: String): Option[String] = queryStringParameters.flatMap(_.get(key))
   def pathParameter(key: String): Option[String]        = pathParameters.flatMap(_.get(key))
+  def stageVariable(key: String): Option[String]        = stageVariables.flatMap(_.get(key))
 }
 
 object RequestJsonProtocol extends DefaultJsonProtocol {
