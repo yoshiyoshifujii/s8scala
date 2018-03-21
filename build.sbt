@@ -14,6 +14,9 @@ lazy val `s8scala-logger` = (project in file("s8scala-logger"))
     name := "s8scala-logger",
     organization := "com.github.yoshiyoshifujii",
     libraryDependencies ++= Seq(
+      specs2Core  % Test,
+      specs2Mock  % Test,
+      specs2JUnit % Test,
       sprayJson,
       scalaLogging,
       logBackClassic
@@ -27,6 +30,9 @@ lazy val `s8scala-api` = (project in file("s8scala-api"))
     name := "s8scala-api",
     organization := "com.github.yoshiyoshifujii",
     libraryDependencies ++= Seq(
+      specs2Core  % Test,
+      specs2Mock  % Test,
+      specs2JUnit % Test,
       lambdaCore
     )
   )
