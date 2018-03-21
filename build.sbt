@@ -1,7 +1,43 @@
 import Dependencies._
 
+lazy val mavenCentral = Seq(
+  publishMavenStyle := true,
+  publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value)
+      Some("snapshots" at nexus + "content/repositories/snapshots")
+    else
+      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  },
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ =>
+    false
+  },
+  sonatypeProfileName := "com.github.yoshiyoshifujii",
+  pomExtra :=
+    <url>https://github.com/yoshiyoshifujii/s8scala</url>
+      <licenses>
+        <license>
+          <name>Apache 2</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+      </licenses>
+      <scm>
+        <url>git@github.com:yoshiyoshifujii/s8scala.git</url>
+        <connection>scm:git:git@github.com:yoshiyoshifujii/s8scala.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>yoshiyoshifujii</id>
+          <name>Yoshitaka Fujii</name>
+          <url>https://github.com/yoshiyoshifujii</url>
+        </developer>
+      </developers>
+)
+
 lazy val root = (project in file("."))
   .aggregate(`s8scala-logger`, `s8scala-api`)
+  .settings(mavenCentral: _*)
   .settings(
     name := "s8scala",
     organization := "com.github.yoshiyoshifujii",
@@ -9,6 +45,7 @@ lazy val root = (project in file("."))
   )
 
 lazy val `s8scala-logger` = (project in file("s8scala-logger"))
+  .settings(mavenCentral: _*)
   .settings(
     scalaVersion := "2.12.4",
     name := "s8scala-logger",
@@ -25,6 +62,7 @@ lazy val `s8scala-logger` = (project in file("s8scala-logger"))
 
 lazy val `s8scala-api` = (project in file("s8scala-api"))
   .dependsOn(`s8scala-logger`)
+  .settings(mavenCentral: _*)
   .settings(
     scalaVersion := "2.12.4",
     name := "s8scala-api",
