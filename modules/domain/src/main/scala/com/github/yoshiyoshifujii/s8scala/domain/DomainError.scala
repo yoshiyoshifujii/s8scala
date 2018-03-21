@@ -2,12 +2,7 @@ package com.github.yoshiyoshifujii.s8scala.domain
 
 import scala.util.Try
 
-sealed trait DomainError {
-  val message: String
-}
-
-case class AssertError(message: String)                      extends DomainError
-case class AlreadyExists(message: String = "already_exists") extends DomainError
+case class DomainError(message: String)
 
 object DomainErrorConverters {
 
@@ -16,7 +11,9 @@ object DomainErrorConverters {
       t.fold(
         {
           case e: AssertionError =>
-            Left(AssertError(e.getMessage.replaceFirst("assertion failed: ", "")))
+            Left(DomainError(e.getMessage.replaceFirst("assertion failed: ", "")))
+          case e: Throwable =>
+            Left(DomainError(Option(e).map(_.getMessage).getOrElse(s"${e.getClass.toString}")))
         },
         Right(_)
       )

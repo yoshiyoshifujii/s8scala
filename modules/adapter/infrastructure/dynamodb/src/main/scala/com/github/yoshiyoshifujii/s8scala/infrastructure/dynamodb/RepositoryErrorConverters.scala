@@ -1,7 +1,12 @@
 package com.github.yoshiyoshifujii.s8scala.infrastructure.dynamodb
 
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException
-import com.github.yoshiyoshifujii.s8scala.domain.{RepositoryError, RepositoryNotFoundError, RepositoryOptimisticError, RepositorySystemError}
+import com.github.yoshiyoshifujii.s8scala.domain.{
+  RepositoryError,
+  RepositoryNotFoundError,
+  RepositoryOptimisticError,
+  RepositorySystemError
+}
 
 import scala.util.Try
 

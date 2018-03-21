@@ -9,7 +9,7 @@ object ApplicationErrorConverters {
   implicit class DomainError2ApplicationError[E](val e: Either[DomainError, E]) extends AnyVal {
     def toApplicationError: Either[ApplicationError, E] =
       e.fold(
-        l => Left(BadRequestError(Option(l.message))),
+        l => Left(BadRequestError(l.message)),
         Right(_)
       )
   }
@@ -22,7 +22,7 @@ object ApplicationErrorConverters {
           case _: RepositoryOptimisticError => Left(ConflictError)
           case _: RepositoryNotFoundError   => Left(NotFoundError)
           case _: RepositoryAlreadyExistsError =>
-            Left(BadRequestError(Some("already_exists")))
+            Left(BadRequestError("already_exists"))
           case RepositorySystemError(t) => Left(InternalServerError(t))
         },
         Right(_)

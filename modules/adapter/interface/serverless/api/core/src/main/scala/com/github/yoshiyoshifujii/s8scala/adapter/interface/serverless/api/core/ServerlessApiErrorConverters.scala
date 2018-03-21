@@ -10,12 +10,11 @@ object ServerlessApiErrorConverters {
     def toServerlessError: Either[ResponseJson, E] =
       e.fold(
         {
-          case _: NoContentsError          => Left(NoContentJson())
-          case BadRequestError(Some(m), _) => Left(BadRequestJson(m))
-          case b: BadRequestError          => Left(BadRequestJson(b.toString))
-          case _: NotFoundError            => Left(NotFoundJson())
-          case _: ConflictError            => Left(ConflictJson())
-          case InternalServerError(cause)  => throw cause
+          case _: NoContentsError         => Left(NoContentJson())
+          case BadRequestError(m)         => Left(BadRequestJson(m))
+          case _: NotFoundError           => Left(NotFoundJson())
+          case _: ConflictError           => Left(ConflictJson())
+          case InternalServerError(cause) => throw cause
         },
         Right(_)
       )

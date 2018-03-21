@@ -7,7 +7,6 @@ trait UserService {
   import com.github.yoshiyoshifujii.s8scala.application.ApplicationErrorConverters._
 
   protected val userRepository: UserRepository
-  protected val userPublisher: UserPublisher
 
   case class UserCreateInput(name: String, email: String)
   case class UserCreateOutput(id: String, version: Long)
@@ -15,7 +14,6 @@ trait UserService {
     for {
       user  <- User.create(input.name, input.email).toApplicationError
       saved <- userRepository.save(user).toApplicationError
-      _     <- userPublisher.publish(saved.toCreatedEvent).toApplicationError
     } yield
       UserCreateOutput(
         id = saved.id.value,

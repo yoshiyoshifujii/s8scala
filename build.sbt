@@ -7,13 +7,12 @@ lazy val accountId  = sys.props.getOrElse("AWS_ACCOUNT_ID", "")
 lazy val region     = sys.props.getOrElse("AWS_REGION", "")
 lazy val roleArn    = sys.props.getOrElse("AWS_ROLE_ARN", "")
 lazy val bucketName = sys.props.getOrElse("AWS_BUCKET_NAME", "")
-lazy val authKey    = sys.props.getOrElse("AUTH_KEY", "")
 
 val baseName = "s8scala"
 
 val commonSettings = Seq(
   version := "0.1.0-SNAPSHOT",
-  scalaVersion := "2.12.3",
+  scalaVersion := "2.12.4",
   organization := "com.github.yoshiyoshifujii.s8scala",
   libraryDependencies ++= rootDeps
 )
@@ -36,9 +35,7 @@ lazy val root = (project in file("."))
   .enablePlugins(ServerlessPlugin, CloudformationPlugin)
   .aggregate(
     authorization,
-    serverlessApiUsers,
-    serverlessSubscriberSQSUsers,
-    serverlessSubscriberKinesisUsers
+    serverlessApiUsers
   )
   .settings(commonSettings: _*)
   .settings(
@@ -63,6 +60,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.authorization.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             events = Events(
               AuthorizeEvent(
@@ -78,6 +77,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             environment = Map("region" -> region),
             events = Events(
@@ -85,11 +86,7 @@ lazy val root = (project in file("."))
                 path = "/users",
                 method = "POST",
                 cors = true,
-                authorizerName = (name in authorization).value,
-                invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey),
-                  body = Some("""{"name":"hoge","email":"hoge@hoge.com"}""".getBytes("utf-8"))
-                )
+                authorizerName = Some((name in authorization).value)
               )
             )
           ),
@@ -101,6 +98,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.gets.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             environment = Map("region" -> region),
             events = Events(
@@ -108,10 +107,7 @@ lazy val root = (project in file("."))
                 path = "/users",
                 method = "GET",
                 cors = true,
-                authorizerName = (name in authorization).value,
-                invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey)
-                )
+                authorizerName = Some((name in authorization).value)
               )
             )
           ),
@@ -123,6 +119,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.get.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             environment = Map("region" -> region),
             events = Events(
@@ -130,11 +128,7 @@ lazy val root = (project in file("."))
                 path = "/users/{id}",
                 method = "GET",
                 cors = true,
-                authorizerName = (name in authorization).value,
-                invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id"     -> "XXX")
-                )
+                authorizerName = Some((name in authorization).value)
               )
             )
           ),
@@ -146,6 +140,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.put.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             environment = Map("region" -> region),
             events = Events(
@@ -153,11 +149,7 @@ lazy val root = (project in file("."))
                 path = "/users/{id}",
                 method = "PUT",
                 cors = true,
-                authorizerName = (name in authorization).value,
-                invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id"     -> "XXX")
-                )
+                authorizerName = Some((name in authorization).value)
               )
             )
           ),
@@ -169,6 +161,8 @@ lazy val root = (project in file("."))
               "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.delete.App::handleRequest",
             role = roleArn,
             tags = Map("CONTEXT" -> baseName),
+            timeout = 30,
+            memorySize = 1024,
             tracing = Some(Tracing.Active),
             environment = Map("region" -> region),
             events = Events(
@@ -176,35 +170,9 @@ lazy val root = (project in file("."))
                 path = "/users/{id}",
                 method = "DELETE",
                 cors = true,
-                authorizerName = (name in authorization).value,
-                invokeInput = HttpInvokeInput(
-                  headers = Seq("Authorization" -> authKey),
-                  pathWithQuerys = Seq("id"     -> "XXX")
-                )
+                authorizerName = Some((name in authorization).value)
               )
             )
-          ),
-          Function(
-            filePath = (assemblyOutputPath in assembly in serverlessSubscriberSQSUsers).value,
-            name = (name in serverlessSubscriberSQSUsers).value,
-            description = Some(baseName),
-            handler =
-              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.sqs.users.App::handler",
-            role = roleArn,
-            tags = Map("CONTEXT" -> baseName),
-            tracing = Some(Tracing.Active),
-            environment = Map("region" -> region)
-          ),
-          Function(
-            filePath = (assemblyOutputPath in assembly in serverlessSubscriberKinesisUsers).value,
-            name = (name in serverlessSubscriberKinesisUsers).value,
-            description = Some(baseName),
-            handler =
-              "com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.subscriber.kinesis.users.App::handler",
-            role = roleArn,
-            tags = Map("CONTEXT" -> baseName),
-            tracing = Some(Tracing.Active),
-            environment = Map("region" -> region)
           )
         )
       )
@@ -221,43 +189,8 @@ lazy val root = (project in file("."))
         stackName = s"$baseName-dynamodb-$EnvName",
         template = "dynamodb.yaml",
         parameters = Map("EnvName" -> EnvName)
-      ),
-      Alias("sqs") -> CloudformationStack(
-        stackName = s"$baseName-sqs-$EnvName",
-        template = "sqs.yaml",
-        parameters = Map("EnvName" -> EnvName)
       )
     )
-  )
-
-lazy val serverlessLogger = (project in file("./modules/adapter/lib/serverless/logger"))
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-serverless-logger",
-    libraryDependencies ++= serverlessLoggerDeps
-  )
-
-lazy val serverlessApi = (project in file("./modules/adapter/lib/serverless/api"))
-  .dependsOn(serverlessLogger)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-serverless-api",
-    libraryDependencies ++= serverlessApiDeps
-  )
-
-lazy val serverlessSubscriberSQS = (project in file("./modules/adapter/lib/serverless/subscriber/sqs"))
-  .dependsOn(serverlessLogger)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-serverless-subscriber-sqs",
-    libraryDependencies ++= serverlessSubscriberSQSDeps
-  )
-
-lazy val serverlessSubscriberKinesis = (project in file("./modules/adapter/lib/serverless/subscriber/kinesis"))
-  .dependsOn(serverlessLogger)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-serverless-subscriber-kinesis"
   )
 
 lazy val domain = (project in file("./modules/domain"))
@@ -288,22 +221,6 @@ lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamo
     libraryDependencies ++= infraDynamoDeps
   )
 
-lazy val infraSQS = (project in file("./modules/adapter/infrastructure/sqs"))
-  .dependsOn(infrastructure)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-infrastructure-sqs",
-    libraryDependencies ++= infraSQSDeps
-  )
-
-lazy val infraKinesis = (project in file("./modules/adapter/infrastructure/kinesis"))
-  .dependsOn(infrastructure)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-infrastructure-kinesis",
-    libraryDependencies ++= infraKinesisDeps
-  )
-
 lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization"))
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
@@ -313,46 +230,42 @@ lazy val authorization = (project in file("./modules/adapter/interface/serverles
   )
 
 lazy val serverlessApiCore = (project in file("./modules/adapter/interface/serverless/api/core"))
-  .dependsOn(serverlessApi, domain, application, infrastructure)
+  .dependsOn(`s8scala-api`, domain, application, infrastructure)
   .settings(commonSettings: _*)
   .settings(
     name := s"$baseName-serverless-api-core"
   )
 
 lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
-  .dependsOn(serverlessApiCore, infraDynamo, infraSQS, infraKinesis)
+  .dependsOn(serverlessApiCore, infraDynamo)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
     name := s"$baseName-serverless-api-users"
   )
 
-lazy val serverlessSubscriberSQSCore = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/core"))
-  .dependsOn(serverlessSubscriberSQS, domain, application, infrastructure)
+lazy val `s8scala-logger` = (project in file("s8scala-logger"))
   .settings(commonSettings: _*)
   .settings(
-    name := s"$baseName-serverless-subscriber-sqs-core"
+    scalaVersion := "2.12.4",
+    name := "s8scala-logger",
+    organization := "com.github.yoshiyoshifujii",
+    libraryDependencies ++= Seq(
+      sprayJson,
+      scalaLogging,
+      logBackClassic
+    )
   )
 
-lazy val serverlessSubscriberSQSUsers = (project in file("./modules/adapter/interface/serverless/subscriber/sqs/users"))
-  .dependsOn(serverlessSubscriberSQSCore, infraDynamo, infraSQS)
+lazy val `s8scala-api` = (project in file("s8scala-api"))
+  .dependsOn(`s8scala-logger`)
   .settings(commonSettings: _*)
-  .settings(assemblySettings: _*)
   .settings(
-    name := s"$baseName-serverless-subscriber-sqs-users"
+    scalaVersion := "2.12.4",
+    name := "s8scala-api",
+    organization := "com.github.yoshiyoshifujii",
+    libraryDependencies ++= Seq(
+      lambdaCore
+    )
   )
 
-lazy val serverlessSubscriberKinesisCore = (project in file("./modules/adapter/interface/serverless/subscriber/kinesis/core"))
-  .dependsOn(serverlessSubscriberSQS, domain, application, infrastructure)
-  .settings(commonSettings: _*)
-  .settings(
-    name := s"$baseName-serverless-subscriber-sqs-core"
-  )
-
-lazy val serverlessSubscriberKinesisUsers = (project in file("./modules/adapter/interface/serverless/subscriber/kinesis/users"))
-  .dependsOn(serverlessSubscriberKinesisCore)
-  .settings(commonSettings: _*)
-  .settings(assemblySettings: _*)
-  .settings(
-    name := s"$baseName-serverless-subscriber-kinesis-users"
-  )

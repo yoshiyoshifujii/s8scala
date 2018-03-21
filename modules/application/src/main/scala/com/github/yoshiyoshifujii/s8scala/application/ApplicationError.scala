@@ -19,17 +19,7 @@ case object NoContentsError extends NoContentsError
 trait NotFoundError       extends ApplicationError
 case object NotFoundError extends NotFoundError
 
-case class BadRequestError(message: Option[String] = None,
-                           args: Seq[Map[String, String]] = Seq.empty)
-    extends ApplicationError {
-
-  override def toString = {
-    s"""${getClass.getName}($message, [${args.mkString(", ")}])
-       |${stackTrace.map(s => s"  at $s").mkString("\n")}
-    """.stripMargin
-  }
-
-}
+case class BadRequestError(message: String) extends ApplicationError
 
 trait ConflictError       extends ApplicationError
 case object ConflictError extends ConflictError

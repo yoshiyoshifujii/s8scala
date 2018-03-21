@@ -49,10 +49,10 @@ trait UserRepositoryOnDynamoDB {
 
   protected def updateInternal(entity: User, version: Long): Either[RepositoryError, User] =
     Try {
-      val newVersion = version + 1L
+      val newVersion          = version + 1L
       val conditionExpression = "#v = :version"
-      val nameMap = new NameMap().`with`("#v", AttrVersion)
-      val valueMap = new ValueMap().withLong(":version", version)
+      val nameMap             = new NameMap().`with`("#v", AttrVersion)
+      val valueMap            = new ValueMap().withLong(":version", version)
       table.putItem(generateItem(entity, newVersion), conditionExpression, nameMap, valueMap)
       entity.copy(version = Some(newVersion))
     }.toRepositoryError
