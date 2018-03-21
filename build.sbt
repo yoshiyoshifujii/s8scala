@@ -279,4 +279,3 @@ lazy val serverlessApiUsers = (project in file("./sample/adapter/interface/serve
   .settings(
     name := s"$baseName-serverless-api-users"
   )
-
