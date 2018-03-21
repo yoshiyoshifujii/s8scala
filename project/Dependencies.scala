@@ -12,7 +12,7 @@ object Dependencies {
   val awsSDKDynamoDB = "com.amazonaws" % "aws-java-sdk-dynamodb" % awsSDKVersion
 
   // XRay
-  val awsXRayVersion = "1.3.1"
+  val awsXRayVersion      = "1.3.1"
   val awsXRayCore         = "com.amazonaws" % "aws-xray-recorder-sdk-core" % awsXRayVersion
   val awsXRaySDK          = "com.amazonaws" % "aws-xray-recorder-sdk-aws-sdk" % awsXRayVersion
   val awsXRayInstrumentor = "com.amazonaws" % "aws-xray-recorder-sdk-aws-sdk-instrumentor" % awsXRayVersion
@@ -26,12 +26,6 @@ object Dependencies {
   // Scala Logging
   val scalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"  % "3.8.0"
   val logBackClassic = "ch.qos.logback"             % "logback-classic" % "1.2.3"
-
-  val rootDeps = Seq(
-    specs2Core  % Test,
-    specs2Mock  % Test,
-    specs2JUnit % Test
-  )
 
   val infraDynamoDeps = Seq(
     awsSDKDynamoDB,

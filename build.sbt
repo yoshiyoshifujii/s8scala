@@ -1,4 +1,36 @@
 import Dependencies._
+
+lazy val root = (project in file("."))
+  .aggregate(`s8scala-logger`, `s8scala-api`)
+  .settings(
+    name := "s8scala",
+    organization := "com.github.yoshiyoshifujii",
+    publishArtifact := false
+  )
+
+lazy val `s8scala-logger` = (project in file("s8scala-logger"))
+  .settings(
+    scalaVersion := "2.12.4",
+    name := "s8scala-logger",
+    organization := "com.github.yoshiyoshifujii",
+    libraryDependencies ++= Seq(
+      sprayJson,
+      scalaLogging,
+      logBackClassic
+    )
+  )
+
+lazy val `s8scala-api` = (project in file("s8scala-api"))
+  .dependsOn(`s8scala-logger`)
+  .settings(
+    scalaVersion := "2.12.4",
+    name := "s8scala-api",
+    organization := "com.github.yoshiyoshifujii",
+    libraryDependencies ++= Seq(
+      lambdaCore
+    )
+  )
+
 import jp.pigumer.sbt.cloud.aws.cloudformation._
 import serverless._
 
@@ -8,19 +40,23 @@ lazy val region     = sys.props.getOrElse("AWS_REGION", "")
 lazy val roleArn    = sys.props.getOrElse("AWS_ROLE_ARN", "")
 lazy val bucketName = sys.props.getOrElse("AWS_BUCKET_NAME", "")
 
-val baseName = "s8scala"
+val baseName = "s8scala-sample"
 
 val commonSettings = Seq(
   version := "0.1.0-SNAPSHOT",
   scalaVersion := "2.12.4",
   organization := "com.github.yoshiyoshifujii.s8scala",
-  libraryDependencies ++= rootDeps
+  libraryDependencies ++= Seq(
+    specs2Core  % Test,
+    specs2Mock  % Test,
+    specs2JUnit % Test
+  )
 )
 
 val assemblySettings = Seq(
   assemblyMergeStrategy in assembly := {
-    case PathList(ps @ _*) if ps.last endsWith ".properties" => MergeStrategy.first
-    case "application.conf" => MergeStrategy.concat
+    case PathList(ps @ _ *) if ps.last endsWith ".properties" => MergeStrategy.first
+    case "application.conf"                                   => MergeStrategy.concat
     case x =>
       val oldStrategy = (assemblyMergeStrategy in assembly).value
       oldStrategy(x)
@@ -31,7 +67,7 @@ val assemblySettings = Seq(
   publishArtifact in (Compile, packageDoc) := false
 )
 
-lazy val root = (project in file("."))
+lazy val sample = (project in file("./sample"))
   .enablePlugins(ServerlessPlugin, CloudformationPlugin)
   .aggregate(
     authorization,
@@ -242,30 +278,5 @@ lazy val serverlessApiUsers = (project in file("./sample/adapter/interface/serve
   .settings(assemblySettings: _*)
   .settings(
     name := s"$baseName-serverless-api-users"
-  )
-
-lazy val `s8scala-logger` = (project in file("s8scala-logger"))
-  .settings(commonSettings: _*)
-  .settings(
-    scalaVersion := "2.12.4",
-    name := "s8scala-logger",
-    organization := "com.github.yoshiyoshifujii",
-    libraryDependencies ++= Seq(
-      sprayJson,
-      scalaLogging,
-      logBackClassic
-    )
-  )
-
-lazy val `s8scala-api` = (project in file("s8scala-api"))
-  .dependsOn(`s8scala-logger`)
-  .settings(commonSettings: _*)
-  .settings(
-    scalaVersion := "2.12.4",
-    name := "s8scala-api",
-    organization := "com.github.yoshiyoshifujii",
-    libraryDependencies ++= Seq(
-      lambdaCore
-    )
   )
 
