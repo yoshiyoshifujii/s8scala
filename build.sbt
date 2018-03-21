@@ -193,27 +193,27 @@ lazy val root = (project in file("."))
     )
   )
 
-lazy val domain = (project in file("./modules/domain"))
+lazy val domain = (project in file("./sample/domain"))
   .settings(commonSettings: _*)
   .settings(
     name := s"$baseName-domain"
   )
 
-lazy val application = (project in file("./modules/application"))
+lazy val application = (project in file("./sample/application"))
   .dependsOn(domain)
   .settings(commonSettings: _*)
   .settings(
     name := s"$baseName-application"
   )
 
-lazy val infrastructure = (project in file("./modules/adapter/infrastructure/core"))
+lazy val infrastructure = (project in file("./sample/adapter/infrastructure/core"))
   .dependsOn(domain)
   .settings(commonSettings: _*)
   .settings(
     name := s"$baseName-infrastructure"
   )
 
-lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamodb"))
+lazy val infraDynamo = (project in file("./sample/adapter/infrastructure/dynamodb"))
   .dependsOn(infrastructure)
   .settings(commonSettings: _*)
   .settings(
@@ -221,7 +221,7 @@ lazy val infraDynamo = (project in file("./modules/adapter/infrastructure/dynamo
     libraryDependencies ++= infraDynamoDeps
   )
 
-lazy val authorization = (project in file("./modules/adapter/interface/serverless/authorization"))
+lazy val authorization = (project in file("./sample/adapter/interface/serverless/authorization"))
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
   .settings(
@@ -229,14 +229,14 @@ lazy val authorization = (project in file("./modules/adapter/interface/serverles
     libraryDependencies ++= authorizationDeps
   )
 
-lazy val serverlessApiCore = (project in file("./modules/adapter/interface/serverless/api/core"))
+lazy val serverlessApiCore = (project in file("./sample/adapter/interface/serverless/api/core"))
   .dependsOn(`s8scala-api`, domain, application, infrastructure)
   .settings(commonSettings: _*)
   .settings(
     name := s"$baseName-serverless-api-core"
   )
 
-lazy val serverlessApiUsers = (project in file("./modules/adapter/interface/serverless/api/users"))
+lazy val serverlessApiUsers = (project in file("./sample/adapter/interface/serverless/api/users"))
   .dependsOn(serverlessApiCore, infraDynamo)
   .settings(commonSettings: _*)
   .settings(assemblySettings: _*)
