@@ -11,7 +11,10 @@ import scala.util.Try
 
 trait BaseStreamHandler extends RequestStreamHandler {
 
-  protected def handle(requestJson: RequestJson): ResponseJson
+  type Valid   = ResponseJson
+  type Invalid = ResponseJson
+
+  protected def handle(requestJson: RequestJson): Either[Invalid, Valid]
 
   protected val logger = LambdaLogger()
 
@@ -48,7 +51,7 @@ trait BaseStreamHandler extends RequestStreamHandler {
       bytes              <- toByteArray(input)
       requestJson        <- convert(bytes)
       responseJson       <- Try(handle(requestJson))
-      responseJsonString <- toJson(responseJson)
+      responseJsonString <- toJson(responseJson.fold(identity, identity))
       responseBytes      <- toBytes(responseJsonString)
     } yield output.write(responseBytes)).fold(
       except,

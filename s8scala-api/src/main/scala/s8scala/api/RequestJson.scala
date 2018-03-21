@@ -30,8 +30,12 @@ case class RequestContextJson(apiId: String,
                               resourcePath: String,
                               stage: String)
 
-trait BodyConverter[J] {
-  def convert(t: String): J
+object RequestConverters {
+  sealed trait Converter[C] {
+    def convert(t: String): C
+  }
+  trait BodyConverter[J]      extends Converter[J]
+  trait AuthorizeConverter[A] extends Converter[A]
 }
 
 case class RequestJson(resource: Option[String],
@@ -44,11 +48,24 @@ case class RequestJson(resource: Option[String],
                        requestContext: RequestContextJson,
                        body: Option[String],
                        isBase64Encoded: Boolean) {
-  def bodyConvert[A](implicit bodyConverter: BodyConverter[A]): Either[ResponseJson, Option[A]] =
-    Try(body map bodyConverter.convert).fold(
+  import RequestConverters._
+
+  private def convert[A](f: => Option[String])(
+      implicit converter: Converter[A]): Either[ResponseJson, Option[A]] =
+    Try(f.map(converter.convert)).fold(
       cause => Left(BadRequestJson(cause.getMessage)),
       Right(_)
     )
+
+  def bodyConvert[A](implicit bodyConverter: BodyConverter[A]): Either[ResponseJson, Option[A]] =
+    convert(body)
+
+  def authorizeConvert[A](
+      implicit authorizeConverter: AuthorizeConverter[A]): Either[ResponseJson, Option[A]] =
+    convert(requestContext.authorizer.map(_.principalId))
+
+  def queryStringParameter(key: String): Option[String] = queryStringParameters.flatMap(_.get(key))
+  def pathParameter(key: String): Option[String]        = pathParameters.flatMap(_.get(key))
 }
 
 object RequestJsonProtocol extends DefaultJsonProtocol {

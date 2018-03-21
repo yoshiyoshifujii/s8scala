@@ -1,12 +1,14 @@
 package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post
 
+import com.github.yoshiyoshifujii.s8scala.application.Authorizer
 import com.github.yoshiyoshifujii.s8scala.application.service.user.UserService
-import s8scala.api.{BaseStreamHandler, BodyConverter, RequestJson, ResponseJson}
+import s8scala.api.{BaseStreamHandler, RequestJson}
 import spray.json._
 
 trait Base extends BaseStreamHandler with UserService {
 
   object UserCreateIOJsonProtocol extends DefaultJsonProtocol {
+    import s8scala.api.RequestConverters._
     implicit val userCreateInputJsonFormatter  = jsonFormat2(UserCreateInput)
     implicit val userCreateOutputJsonFormatter = jsonFormat2(UserCreateOutput)
 
@@ -21,12 +23,14 @@ trait Base extends BaseStreamHandler with UserService {
   }
 
   import com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.core.ServerlessApiErrorConverters._
+  import com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.core.AuthorizerConverters._
   import s8scala.api.ResponseJsonConverters._
   import UserCreateIOJsonProtocol._
 
-  override protected def handle(requestJson: RequestJson): ResponseJson =
-    (for {
-      input  <- requestJson.bodyConvert[UserCreateInput].ifNoneThenBadRequest("invalid_data")
-      output <- create(input).toServerlessError
-    } yield output.toOk).get
+  override protected def handle(requestJson: RequestJson): Either[Invalid, Valid] =
+    for {
+      authorizer <- requestJson.authorizeConvert[Authorizer].ifNoneThenUnauthorized
+      input      <- requestJson.bodyConvert[UserCreateInput].ifNoneThenBadRequest("invalid_data")
+      output     <- create(authorizer, input).toServerlessError
+    } yield output.toOk
 }

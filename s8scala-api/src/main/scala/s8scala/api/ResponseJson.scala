@@ -218,13 +218,19 @@ object NetworkAuthenticationRequiredJson {
 object ResponseJsonConverters {
 
   implicit class Option2ResponseJson[E](val o: Either[ResponseJson, Option[E]]) extends AnyVal {
-    def ifNoneThenNoContent(message: String): Either[ResponseJson, E] =
+    def ifNoneThenNoContent: Either[ResponseJson, E] =
       o.flatMap(_.toRight(NoContentJson()))
 
     def ifNoneThenBadRequest(message: String): Either[ResponseJson, E] =
       o.flatMap(_.toRight(BadRequestJson(message)))
 
-    def ifNoneThenNotFound(message: String): Either[ResponseJson, E] =
+    def ifNoneThenUnauthorized: Either[ResponseJson, E] =
+      o.flatMap(_.toRight(UnauthorizedJson()))
+
+    def ifNoneThenForbidden: Either[ResponseJson, E] =
+      o.flatMap(_.toRight(ForbiddenJson()))
+
+    def ifNoneThenNotFound: Either[ResponseJson, E] =
       o.flatMap(_.toRight(NotFoundJson()))
   }
 

@@ -20,8 +20,4 @@ object ServerlessApiErrorConverters {
       )
   }
 
-  implicit class Either2ResponseJson(val e: Either[ResponseJson, ResponseJson]) extends AnyVal {
-    def get: ResponseJson = e.fold(identity, identity)
-  }
-
 }
