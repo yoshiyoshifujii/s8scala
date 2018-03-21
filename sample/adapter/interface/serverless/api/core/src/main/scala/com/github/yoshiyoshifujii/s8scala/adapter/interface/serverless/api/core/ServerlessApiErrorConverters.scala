@@ -1,7 +1,7 @@
 package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.core
 
 import com.github.yoshiyoshifujii.s8scala.application._
-import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda._
+import s8scala.api._
 
 object ServerlessApiErrorConverters {
 

@@ -1,4 +1,4 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.logging
+package s8scala.logger
 
 import com.typesafe.scalalogging.LazyLogging
 import spray.json._

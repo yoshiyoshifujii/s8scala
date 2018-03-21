@@ -1,7 +1,7 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.logging
+package s8scala.logger
 
-import ch.qos.logback.classic.{Level, Logger, LoggerContext}
 import ch.qos.logback.classic.spi.LoggerContextListener
+import ch.qos.logback.classic.{Level, Logger, LoggerContext}
 import ch.qos.logback.core.PropertyDefinerBase
 import ch.qos.logback.core.spi.{ContextAwareBase, LifeCycle}
 

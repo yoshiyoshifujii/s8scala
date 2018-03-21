@@ -1,10 +1,10 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
+package s8scala.api
 
 import java.io.{InputStream, OutputStream}
 import java.nio.charset.StandardCharsets
 
 import com.amazonaws.services.lambda.runtime.{Context, RequestStreamHandler}
-import com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLogger
+import s8scala.logger.LambdaLogger
 import spray.json._
 
 import scala.util.Try

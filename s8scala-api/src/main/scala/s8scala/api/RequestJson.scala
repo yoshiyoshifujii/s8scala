@@ -1,4 +1,4 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
+package s8scala.api
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 

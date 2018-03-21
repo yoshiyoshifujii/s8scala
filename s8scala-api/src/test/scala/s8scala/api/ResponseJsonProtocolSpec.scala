@@ -1,4 +1,4 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
+package s8scala.api
 
 import org.specs2.mutable.Specification
 import spray.json._
@@ -7,7 +7,7 @@ class ResponseJsonProtocolSpec extends Specification {
 
   "ResponseJsonProtocol" should {
     "success" in {
-      import ResponseJsonProtocol._
+      import s8scala.api.ResponseJsonProtocol._
       ResponseJson(
         isBase64Encoded = false,
         statusCode = HttpStatusCode.OK,

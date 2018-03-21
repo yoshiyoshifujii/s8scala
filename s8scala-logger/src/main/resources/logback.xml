@@ -1,6 +1,6 @@
 <configuration>
-    <contextListener class="com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLoggingListener" />
-    <define name="lambdaLogLevel" class="com.github.yoshiyoshifujii.s8scala.infrastructure.logging.LambdaLogLevelPropertyDefiner" />
+    <contextListener class="s8scala.logger.LambdaLoggingListener" />
+    <define name="lambdaLogLevel" class="s8scala.logger.LambdaLogLevelPropertyDefiner" />
 
     <appender name="CLOUDWATCH" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

@@ -1,6 +1,6 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
+package s8scala.api
 
-import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.HttpStatusCode.HttpStatusCode
+import s8scala.api.HttpStatusCode.HttpStatusCode
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class ResponseJson(isBase64Encoded: Boolean,

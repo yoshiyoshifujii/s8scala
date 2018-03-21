@@ -1,7 +1,7 @@
 package com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.users.post
 
 import com.github.yoshiyoshifujii.s8scala.application.service.user.UserService
-import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda._
+import s8scala.api.{BaseStreamHandler, BodyConverter, RequestJson, ResponseJson}
 import spray.json._
 
 trait Base extends BaseStreamHandler with UserService {
@@ -21,7 +21,7 @@ trait Base extends BaseStreamHandler with UserService {
   }
 
   import com.github.yoshiyoshifujii.s8scala.adapter.interface.serverless.api.core.ServerlessApiErrorConverters._
-  import com.github.yoshiyoshifujii.s8scala.infrastructure.lambda.ResponseJsonConverters._
+  import s8scala.api.ResponseJsonConverters._
   import UserCreateIOJsonProtocol._
 
   override protected def handle(requestJson: RequestJson): ResponseJson =

@@ -1,4 +1,4 @@
-package com.github.yoshiyoshifujii.s8scala.infrastructure.lambda
+package s8scala.api
 
 import org.specs2.mutable.Specification
 import spray.json.JsonParser
