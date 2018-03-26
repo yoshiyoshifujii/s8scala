@@ -9,7 +9,7 @@ import spray.json._
 
 import scala.util.Try
 
-trait BaseStreamHandler extends RequestStreamHandler {
+trait BaseStreamHandler extends RequestStreamHandler with ResponseFolder { self: ResponseFolder =>
 
   type Valid   = ResponseJson
   type Invalid = ResponseJson
@@ -50,8 +50,8 @@ trait BaseStreamHandler extends RequestStreamHandler {
     (for {
       bytes              <- toByteArray(input)
       requestJson        <- convert(bytes)
-      responseJson       <- Try(handle(requestJson))
-      responseJsonString <- toJson(responseJson.fold(identity, identity))
+      eitherResponseJson <- Try(handle(requestJson))
+      responseJsonString <- toJson(self.foldResponseJson(eitherResponseJson))
       responseBytes      <- toBytes(responseJsonString)
     } yield output.write(responseBytes)).fold(
       except,
