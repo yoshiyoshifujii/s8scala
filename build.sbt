@@ -79,7 +79,6 @@ import jp.pigumer.sbt.cloud.aws.cloudformation._
 import serverless._
 
 lazy val EnvName    = sys.env.getOrElse("ENV_NAME", "dev")
-lazy val accountId  = sys.props.getOrElse("AWS_ACCOUNT_ID", "")
 lazy val region     = sys.props.getOrElse("AWS_REGION", "")
 lazy val roleArn    = sys.props.getOrElse("AWS_ROLE_ARN", "")
 lazy val bucketName = sys.props.getOrElse("AWS_BUCKET_NAME", "")
@@ -124,7 +123,7 @@ lazy val sample = (project in file("./sample"))
     serverlessOption := {
       ServerlessOption(
         Provider(
-          awsAccount = accountId,
+          awsAccount = awscfAccountId.value,
           deploymentBucket = bucketName,
           region = region
         ),
